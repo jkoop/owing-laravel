@@ -1,0 +1,21 @@
+{
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"format": "prettier --write '**/*.{js,css,php,md,json,yml,yaml}'"
+	},
+	"devDependencies": {
+		"@prettier/plugin-php": "^0.22.1",
+		"@shufo/prettier-plugin-blade": "^1.13.4",
+		"axios": "^1.6.1",
+		"laravel-vite-plugin": "^1.0.0",
+		"prettier": "^3.1.1",
+		"vite": "^5.0.0"
+	},
+	"dependencies": {
+		"@alpinejs/focus": "^3.13.3",
+		"alpinejs": "^3.13.3"
+	}
+}

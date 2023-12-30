@@ -1,0 +1,11 @@
+.change-history time {
+	text-wrap: nowrap;
+}
+
+.change-history td {
+	word-break: break-word;
+}
+
+.change-history tr:nth-child(even) td {
+	background-color: #0001;
+}

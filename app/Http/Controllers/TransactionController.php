@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Exceptions\ImpossibleStateException;
+use App\Models\Car;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Repositories\FuelPriceRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
+
+final class TransactionController extends Controller {
+	public function new() {
+		return view("pages.transaction", ["transaction" => new Transaction()]);
+	}
+
+	public function create(Request $request) {
+		DB::beginTransaction(); // prevent races
+
+		$request->validate([
+			'kind' => 'required|in:owing,payment,drivetrak',
+			'from_to' => 'nullable|required_if:kind,owing,payment|in:from,to',
+			'car_id' => 'nullable|required_if:kind,drivetrak|integer|exists:cars,id',
+			'other_user_id' => 'nullable|required_if:kind,owing,payment|integer|exists:users,id', // we'll do more validation in a moment
+			'distance' => 'nullable|required_if:kind,drivetrak|numeric|min:0.0001',
+			'amount' => 'nullable|required_if:kind,owing,payment|numeric', // we'll do more validation in a moment
+			'occurred_at' => 'required|date',
+			'memo' => 'present',
+		]);
+
+		if ($request->kind != 'drivetrak') {
+		} else if ($request->kind == 'drivetrak') {
+			$car = Car::findOrPanic($request->car_id);
+			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
+			$amount = round($car->efficiency * $fuelPrice->price * $request->distance, 4);
+
+			if ($car->owner_id == Auth::id()) {
+				$request->validate(['other_user_id' => 'required']);
+				$otherUser = User::findOrPanic($request->other_user_id);
+			} else {
+				$otherUser = $car->owner;
+			}
+
+			Validator::validate(
+				compact('amount'),
+				['amount' => 'required|numeric|min:0.0001']
+			);
+
+			$fromUser = $car->owner_id == Auth::id() ? Auth::user() : $otherUser;
+			$toUser = $car->owner_id != Auth::id() ? Auth::user() : $otherUser;
+
+			$transaction = Transaction::create([
+				'kind' => 'drivetrak',
+				'from_user_id' => $fromUser->id,
+				'to_user_id' => $toUser->id,
+				'amount' => (float) $amount,
+				'confirmed' => $fromUser->id == Auth::id(),
+				'car_id' => $car->id,
+				'distance' => round($request->distance, 4),
+				'memo' => trim($request->memo ?? ''),
+				'occurred_at' => strtotime($request->occurred_at . ' 12:00 America/Winnipeg'),
+			]);
+
+			DB::commit();
+
+			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
+		} else {
+			throw new ImpossibleStateException();
+		}
+
+		throw new ImpossibleStateException();
+	}
+}
