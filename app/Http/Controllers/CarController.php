@@ -39,7 +39,7 @@ final class CarController extends Controller {
 
 		$data = [
 			"name" => $request->name,
-			"efficiency" => (float) $request->efficiency,
+			"efficiency" => round($request->efficiency, 4),
 			"fuel_type" => $request->fuel_type,
 			"owner_id" => Auth::user()->is_admin ? $request->owner_id : Auth::id(),
 		];

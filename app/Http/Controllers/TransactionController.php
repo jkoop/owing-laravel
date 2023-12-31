@@ -36,7 +36,7 @@ final class TransactionController extends Controller {
 			$otherUser = User::findOrPanic($request->other_user_id);
 
 			$request->validate([
-				"amount" => "required|numeric|min:0.0001",
+				"amount" => "required|numeric|min:0.01",
 			]);
 
 			$fromUser = $request->from_to == "to" ? Auth::user() : $otherUser;
@@ -46,7 +46,7 @@ final class TransactionController extends Controller {
 				"kind" => $request->kind,
 				"from_user_id" => $fromUser->id,
 				"to_user_id" => $toUser->id,
-				"amount" => (float) round($request->amount, 4),
+				"amount" => round($request->amount, 2),
 				"confirmed" => $fromUser->id == Auth::id(),
 				"car_id" => null,
 				"distance" => null,
@@ -57,10 +57,10 @@ final class TransactionController extends Controller {
 			DB::commit();
 
 			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
-		} elseif ($request->kind == "drivetrak") {
+		} else if ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
 			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
-			$amount = round($car->efficiency * $fuelPrice->price * $request->distance, 4);
+			$amount = round($car->efficiency * $fuelPrice->price * $request->distance, 2);
 
 			if ($car->owner_id == Auth::id()) {
 				$request->validate(["other_user_id" => "required"]);
@@ -70,10 +70,10 @@ final class TransactionController extends Controller {
 			}
 
 			$request->validate([
-				"distance" => "nullable|required_if:kind,drivetrak|numeric|min:0.0001",
+				"distance" => "nullable|required_if:kind,drivetrak|numeric|min:0.01",
 			]);
 
-			Validator::validate(compact("amount"), ["amount" => "required|numeric|min:0.0001"]);
+			Validator::validate(compact("amount"), ["amount" => "required|numeric|min:0.01"]);
 
 			$fromUser = $car->owner_id == Auth::id() ? Auth::user() : $otherUser;
 			$toUser = $car->owner_id != Auth::id() ? Auth::user() : $otherUser;
@@ -85,7 +85,7 @@ final class TransactionController extends Controller {
 				"amount" => (float) $amount,
 				"confirmed" => $fromUser->id == Auth::id(),
 				"car_id" => $car->id,
-				"distance" => round($request->distance, 4),
+				"distance" => round($request->distance, 2),
 				"memo" => trim($request->memo ?? ""),
 				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
 			]);

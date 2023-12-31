@@ -11,7 +11,7 @@ final class CalculatorController extends Controller {
 	public function tripPrice(Request $request) {
 		$request->validate([
 			"car_id" => "required|int|exists:cars,id",
-			"distance" => "required|numeric|min:0.0001",
+			"distance" => "required|numeric|min:0.01",
 			"date" => "nullable",
 		]);
 
@@ -27,7 +27,7 @@ final class CalculatorController extends Controller {
 		$car = Car::findOrPanic($request->car_id);
 		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $date);
 
-		$answer = number_format($car->efficiency * $fuelPrice->price * $request->distance, 4);
+		$answer = number_format($car->efficiency * $fuelPrice->price * $request->distance, 2);
 		$answer = '$' . $answer;
 
 		if (strtotime($dateString) < 1000000000) {

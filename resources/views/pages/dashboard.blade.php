@@ -33,9 +33,15 @@
 					<td><x-datetime :datetime="$transaction->occurred_at" /></td>
 					<td><x-user :user="$transaction->userFrom" /></td>
 					<td><x-user :user="$transaction->userTo" /></td>
-					<td>${{ number_format($transaction->amount, 4) }}</td>
+					<td>${{ number_format($transaction->amount, 2) }}</td>
 					<td><x-car :car="$transaction->car" /></td>
-					<td>{{ $transaction->memo }}</td>
+					<td>
+					@if ($transaction->memo != null)
+					{{ $transaction->memo }}
+					@else
+					<i>no memo</i>
+					@endif
+					</td>
 					<td><a href="/transaction/{{ $transaction->id }}">edit</a></td>
 				</tr>
 			@endforeach
