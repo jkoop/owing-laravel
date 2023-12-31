@@ -10,18 +10,18 @@ use Illuminate\Support\Carbon;
 final class CalculatorController extends Controller {
 	public function tripPrice(Request $request) {
 		$request->validate([
-			'car_id' => 'required|int|exists:cars,id',
-			'distance' => 'required|numeric|min:0.0001',
-			'date' => 'nullable',
+			"car_id" => "required|int|exists:cars,id",
+			"distance" => "required|numeric|min:0.0001",
+			"date" => "nullable",
 		]);
 
 		$dateString = $request->date;
 
 		if (strtotime($request->date) >= 1000000000) {
-			$dateString = $dateString . ' 12:00 America/Winnipeg';
-			$date = new Carbon(date('r', strtotime($dateString)));
+			$dateString = $dateString . " 12:00 America/Winnipeg";
+			$date = new Carbon(date("r", strtotime($dateString)));
 		} else {
-			$date = now('America/Winnipeg');
+			$date = now("America/Winnipeg");
 		}
 
 		$car = Car::findOrPanic($request->car_id);
@@ -31,13 +31,19 @@ final class CalculatorController extends Controller {
 		$answer = '$' . $answer;
 
 		if (strtotime($dateString) < 1000000000) {
-			$answer .= ' (assuming today)';
-		} else if ($date->timestamp > now()->timestamp && $date->format('Y-m-d') != now('America/Winnipeg')->format('Y-m-d')) {
-			$answer .= ' (as of now; the future is not now)';
+			$answer .= " (assuming today)";
+		} elseif (
+			$date->timestamp > now()->timestamp &&
+			$date->format("Y-m-d") != now("America/Winnipeg")->format("Y-m-d")
+		) {
+			$answer .= " (as of now; the future is not now)";
 		}
 
-		return response($answer, headers: [
-			'Content-Type' => 'text/plain',
-		]);
+		return response(
+			$answer,
+			headers: [
+				"Content-Type" => "text/plain",
+			],
+		);
 	}
 }

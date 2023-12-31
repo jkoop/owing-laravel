@@ -38,7 +38,7 @@ Route::middleware("auth")->group(function () {
 
 	Route::get("logout", [AuthenticationController::class, "logout"]);
 
-	Route::get('calculate/trip-price', [CalculatorController::class, 'tripPrice']);
+	Route::get("calculate/trip-price", [CalculatorController::class, "tripPrice"]);
 });
 
 Route::middleware("guest")->group(function () {

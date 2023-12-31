@@ -78,12 +78,12 @@ return new class extends Migration {
 
 		Schema::create("transactions", function (Blueprint $table) {
 			$table->id();
-			$table->enum("kind", ["owing", "payment", 'drivetrak']);
+			$table->enum("kind", ["owing", "payment", "drivetrak"]);
 			$table->foreignId("from_user_id");
 			$table->foreignId("to_user_id");
 			$table->unsignedFloat("amount");
 			$table->boolean("confirmed");
-			$table->unsignedFloat("distance");
+			$table->unsignedFloat("distance")->nullable();
 			$table->string("memo");
 			$table
 				->foreignId("car_id")

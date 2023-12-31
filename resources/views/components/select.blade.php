@@ -1,5 +1,5 @@
 @props(['name', 'selected' => null])
 
-<select x-model="{{ $name }}" name="{{ $name }}" {{ $attributes }}>
+<select name="{{ $name }}" x-model="{{ $name }}" {{ $attributes }}>
 	{{ $slot }}
 </select>

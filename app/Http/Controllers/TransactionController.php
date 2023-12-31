@@ -22,47 +22,72 @@ final class TransactionController extends Controller {
 		DB::beginTransaction(); // prevent races
 
 		$request->validate([
-			'kind' => 'required|in:owing,payment,drivetrak',
-			'from_to' => 'nullable|required_if:kind,owing,payment|in:from,to',
-			'car_id' => 'nullable|required_if:kind,drivetrak|integer|exists:cars,id',
-			'other_user_id' => 'nullable|required_if:kind,owing,payment|integer|exists:users,id', // we'll do more validation in a moment
-			'distance' => 'nullable|required_if:kind,drivetrak|numeric|min:0.0001',
-			'amount' => 'nullable|required_if:kind,owing,payment|numeric', // we'll do more validation in a moment
-			'occurred_at' => 'required|date',
-			'memo' => 'present',
+			"kind" => "required|in:owing,payment,drivetrak",
+			"from_to" => "nullable|required_if:kind,owing,payment|in:from,to",
+			"car_id" => "nullable|required_if:kind,drivetrak|integer|exists:cars,id",
+			"other_user_id" => "nullable|required_if:kind,owing,payment|integer|exists:users,id", // we'll do more validation in a moment
+			"distance" => "nullable|required_if:kind,drivetrak|numeric", // we'll do more validation in a moment
+			"amount" => "nullable|required_if:kind,owing,payment|numeric", // we'll do more validation in a moment
+			"occurred_at" => "required|date",
+			"memo" => "present",
 		]);
 
-		if ($request->kind != 'drivetrak') {
-		} else if ($request->kind == 'drivetrak') {
+		if ($request->kind != "drivetrak") {
+			$otherUser = User::findOrPanic($request->other_user_id);
+
+			$request->validate([
+				"amount" => "required|numeric|min:0.0001",
+			]);
+
+			$fromUser = $request->from_to == "to" ? Auth::user() : $otherUser;
+			$toUser = $request->from_to != "to" ? Auth::user() : $otherUser;
+
+			$transaction = Transaction::create([
+				"kind" => $request->kind,
+				"from_user_id" => $fromUser->id,
+				"to_user_id" => $toUser->id,
+				"amount" => (float) round($request->amount, 4),
+				"confirmed" => $fromUser->id == Auth::id(),
+				"car_id" => null,
+				"distance" => null,
+				"memo" => trim($request->memo ?? ""),
+				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
+			]);
+
+			DB::commit();
+
+			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
+		} elseif ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
 			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
 			$amount = round($car->efficiency * $fuelPrice->price * $request->distance, 4);
 
 			if ($car->owner_id == Auth::id()) {
-				$request->validate(['other_user_id' => 'required']);
+				$request->validate(["other_user_id" => "required"]);
 				$otherUser = User::findOrPanic($request->other_user_id);
 			} else {
 				$otherUser = $car->owner;
 			}
 
-			Validator::validate(
-				compact('amount'),
-				['amount' => 'required|numeric|min:0.0001']
-			);
+			$request->validate([
+				"distance" => "nullable|required_if:kind,drivetrak|numeric|min:0.0001",
+			]);
+
+			Validator::validate(compact("amount"), ["amount" => "required|numeric|min:0.0001"]);
 
 			$fromUser = $car->owner_id == Auth::id() ? Auth::user() : $otherUser;
 			$toUser = $car->owner_id != Auth::id() ? Auth::user() : $otherUser;
 
 			$transaction = Transaction::create([
-				'kind' => 'drivetrak',
-				'from_user_id' => $fromUser->id,
-				'to_user_id' => $toUser->id,
-				'amount' => (float) $amount,
-				'confirmed' => $fromUser->id == Auth::id(),
-				'car_id' => $car->id,
-				'distance' => round($request->distance, 4),
-				'memo' => trim($request->memo ?? ''),
-				'occurred_at' => strtotime($request->occurred_at . ' 12:00 America/Winnipeg'),
+				"kind" => "drivetrak",
+				"from_user_id" => $fromUser->id,
+				"to_user_id" => $toUser->id,
+				"amount" => (float) $amount,
+				"confirmed" => $fromUser->id == Auth::id(),
+				"car_id" => $car->id,
+				"distance" => round($request->distance, 4),
+				"memo" => trim($request->memo ?? ""),
+				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
 			]);
 
 			DB::commit();

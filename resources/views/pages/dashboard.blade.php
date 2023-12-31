@@ -22,6 +22,7 @@
 				<th>From</th>
 				<th>To</th>
 				<th>Amount</th>
+				<th>Car</th>
 				<th>Memo</th>
 				<th></th>
 			</tr>
@@ -32,7 +33,8 @@
 					<td><x-datetime :datetime="$transaction->occurred_at" /></td>
 					<td><x-user :user="$transaction->userFrom" /></td>
 					<td><x-user :user="$transaction->userTo" /></td>
-					<td>{{ $transaction->amount }}</td>
+					<td>${{ number_format($transaction->amount, 4) }}</td>
+					<td><x-car :car="$transaction->car" /></td>
 					<td>{{ $transaction->memo }}</td>
 					<td><a href="/transaction/{{ $transaction->id }}">edit</a></td>
 				</tr>
