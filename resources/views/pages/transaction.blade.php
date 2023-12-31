@@ -30,7 +30,7 @@
 			<fieldset>
 				<legend>What kind of transaction is this?</legend>
 				<label><x-input name="kind" type="radio" value="owing" /> Someone owes money</label>
-				<label><x-input name="kind" type="radio" value="payment" /> Someone payed money</label>
+				<label><x-input name="kind" type="radio" value="payment" /> Someone paid money</label>
 				<label><x-input name="kind" type="radio" value="drivetrak" /> Someone drove a car</label>
 			</fieldset>
 
@@ -39,12 +39,12 @@
 				<label>
 					<x-input name="from_to" type="radio" value="from" />
 					<span x-show="kind == 'owing'">I owe him</span>
-					<span x-show="kind != 'owing'">He payed me</span>
+					<span x-show="kind != 'owing'">He paid me</span>
 				</label>
 				<label>
 					<x-input name="from_to" type="radio" value="to" />
 					<span x-show="kind == 'owing'">He owes me</span>
-					<span x-show="kind != 'owing'">I payed him</span>
+					<span x-show="kind != 'owing'">I paid him</span>
 				</label>
 			</fieldset>
 
