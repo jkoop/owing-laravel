@@ -30,6 +30,7 @@ Route::middleware("auth")->group(function () {
 
 	Route::get("transaction/new", [TransactionController::class, "new"]);
 	Route::post("transaction/new", [TransactionController::class, "create"]);
+	Route::get("transaction/{transaction}", [TransactionController::class, "view"])->can("view", "transaction");
 
 	Route::get("profile", [ProfileController::class, "view"]);
 	Route::post("profile", [ProfileController::class, "update"]);

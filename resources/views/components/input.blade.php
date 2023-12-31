@@ -14,6 +14,7 @@
 type="{{ $type }}"
 name="{{ $name }}"
 x-model="{{ $name }}"
+x-bind:disabled="disabled == true"
 @if (old($name, $value) !== null)
 	value="{{ $type != 'checkbox' && $type != 'radio' ? old($name, $value) : $value }}"
 @endif

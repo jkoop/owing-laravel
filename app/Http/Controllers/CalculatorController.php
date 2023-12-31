@@ -36,7 +36,7 @@ final class CalculatorController extends Controller {
 			$date->timestamp > now()->timestamp &&
 			$date->format("Y-m-d") != now("America/Winnipeg")->format("Y-m-d")
 		) {
-			$answer .= " (as of now; the future is not now)";
+			$answer .= " (transactions in the future can change without warning)";
 		}
 
 		return response(

@@ -36,13 +36,19 @@
 					<td>${{ number_format($transaction->amount, 2) }}</td>
 					<td><x-car :car="$transaction->car" /></td>
 					<td>
-					@if ($transaction->memo != null)
-					{{ $transaction->memo }}
-					@else
-					<i>no memo</i>
-					@endif
+						@if ($transaction->memo != null)
+							{{ $transaction->memo }}
+						@else
+							<i>no memo</i>
+						@endif
 					</td>
-					<td><a href="/transaction/{{ $transaction->id }}">edit</a></td>
+					<td><a href="/transaction/{{ $transaction->id }}">
+							@can('update', $transaction)
+								edit
+							@else
+								view
+							@endcan
+						</a></td>
 				</tr>
 			@endforeach
 		</tbody>

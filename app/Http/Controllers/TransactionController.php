@@ -18,6 +18,10 @@ final class TransactionController extends Controller {
 		return view("pages.transaction", ["transaction" => new Transaction()]);
 	}
 
+	public function view(Transaction $transaction) {
+		return view("pages.transaction", compact("transaction"));
+	}
+
 	public function create(Request $request) {
 		DB::beginTransaction(); // prevent races
 
@@ -57,7 +61,7 @@ final class TransactionController extends Controller {
 			DB::commit();
 
 			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
-		} else if ($request->kind == "drivetrak") {
+		} elseif ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
 			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
 			$amount = round($car->efficiency * $fuelPrice->price * $request->distance, 2);
