@@ -78,8 +78,8 @@
 		<fieldset x-cloak x-show="kind && kind != 'drivetrak' && from_to && other_user_id" x-transition>
 			<legend x-show="kind == 'owing' && from_to == 'from'">How much do you owe him?</legend>
 			<legend x-show="kind == 'owing' && from_to == 'to'">How much does he owe you?</legend>
-			<legend x-show="kind != 'owing' && from_to == 'from'">How much did you pay him?</legend>
-			<legend x-show="kind != 'owing' && from_to == 'to'">How much did he pay you?</legend>
+			<legend x-show="kind != 'owing' && from_to == 'to'">How much did you pay him?</legend>
+			<legend x-show="kind != 'owing' && from_to == 'from'">How much did he pay you?</legend>
 
 			<span>$<x-input name="amount" type="number" style="max-width:70px" step="0.01" min="0"
 					:value="$transaction->amount" /></span>
