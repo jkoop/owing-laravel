@@ -61,7 +61,7 @@
 			<fieldset x-cloak
 				x-show="(kind && kind != 'drivetrak' && from_to) || (kind == 'drivetrak' && my_cars.includes(parseInt(car_id)))"
 				x-transition>
-				<legend x-show="kind && from_to">Who is he?</legend>
+				<legend x-show="kind && kind != 'drivetrak' && from_to">Who is he?</legend>
 				<legend x-show="kind == 'drivetrak' && my_cars.includes(parseInt(car_id))">Who drove it?</legend>
 
 				<x-select name="other_user_id">
