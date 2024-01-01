@@ -67,7 +67,7 @@ final class UserController extends Controller {
 			$data["must_change_password"] = true;
 			$user->fill($data);
 			$user->save();
-			return Redirect::to("/user/" . $user->id)->with("success", "Saved");
+			return Redirect::to("/u/" . $user->id)->with("success", "Saved");
 		}
 	}
 }

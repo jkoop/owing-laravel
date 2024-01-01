@@ -15,10 +15,10 @@
 		<nav>
 			@if (Auth::check())
 				<a href="/">Dashboard</a>
-				<a href="/cars">Cars</a>
+				<a href="/c">Cars</a>
 			@endif
 			@can('isAdmin')
-				<a href="/users">Users</a>
+				<a href="/u">Users</a>
 			@endcan
 			@if (Auth::check())
 				<a href="/profile">Profile</a>

@@ -3,11 +3,11 @@
 @section('content')
 
 	<nav>
-		<a href="/car/new">New</a>
+		<a href="/c/new">New</a>
 		@if (request()->has('deleted'))
-			<a href="/cars">Hide deleted</a>
+			<a href="/c">Hide deleted</a>
 		@else
-			<a href="/cars?deleted">Show deleted</a>
+			<a href="/c?deleted">Show deleted</a>
 		@endif
 	</nav>
 

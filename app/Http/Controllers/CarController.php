@@ -60,7 +60,7 @@ final class CarController extends Controller {
 		} else {
 			$car->fill($data);
 			$car->save();
-			return Redirect::to("/car/" . $car->id)->with("success", "Saved");
+			return Redirect::to("/c/" . $car->id)->with("success", "Saved");
 		}
 	}
 }

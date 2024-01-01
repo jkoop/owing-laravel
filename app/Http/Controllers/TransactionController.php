@@ -77,7 +77,7 @@ final class TransactionController extends Controller {
 			$transaction->save();
 			DB::commit();
 
-			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
+			return Redirect::to("/t/$transaction->id")->with("success", "Saved");
 		} elseif ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
 			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
@@ -113,7 +113,7 @@ final class TransactionController extends Controller {
 			$transaction->save();
 			DB::commit();
 
-			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
+			return Redirect::to("/t/$transaction->id")->with("success", "Saved");
 		} else {
 			throw new ImpossibleStateException();
 		}

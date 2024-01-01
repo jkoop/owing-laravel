@@ -7,7 +7,7 @@
 	<h2>Ledger</h2>
 
 	<nav>
-		<a href="/transaction/new">New</a>
+		<a href="/t/new">New</a>
 		@if (request()->has('deleted'))
 			<a href="/">Hide deleted</a>
 		@else
@@ -43,14 +43,14 @@
 						@endif
 					</td>
 					<td>
-						<a href="/transaction/{{ $transaction->id }}">
+						<a href="/t/{{ $transaction->id }}">
 							@can('update', $transaction)
 								edit
 							@else
 								view
 							@endcan
 						</a>
-						<a href="/transaction/new?clone={{ $transaction->id }}">clone</a>
+						<a href="/t/new?clone={{ $transaction->id }}">clone</a>
 					</td>
 				</tr>
 			@endforeach
