@@ -13,17 +13,17 @@
 <body>
 	<header>
 		<nav>
-			@if (Auth::check())
+			@auth
 				<a href="/">Dashboard</a>
 				<a href="/c">Cars</a>
-			@endif
+			@endauth
 			@can('isAdmin')
 				<a href="/u">Users</a>
 			@endcan
-			@if (Auth::check())
-				<a href="/profile">Profile</a>
+			@auth
+				<a href="/profile" class="ml-auto">Profile</a>
 				<a href="/logout">Logout</a>
-			@endif
+			@endauth
 		</nav>
 	</header>
 	<main>
@@ -33,10 +33,10 @@
 		@yield('content')
 	</main>
 	<footer>
-		@if (Auth::check())
-			{{ Auth::user()->name }}
-			<a href="/logout">Logout</a>
-		@endif
+		<span>Page took {{ number_format(microtime(true) - LARAVEL_START, 2) }}s</span>
+		@auth
+			<span><a href="/profile">{{ Auth::user()->name }}</a></span>
+		@endauth
 	</footer>
 </body>
 

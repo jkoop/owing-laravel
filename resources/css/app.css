@@ -10,14 +10,38 @@ body {
 	display: flex;
 	gap: 1rem;
 	flex-direction: column;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	min-height: calc(100% - 16px);
-	min-height: calc(100vh - 16px);
-	min-height: calc(100svh - 16px);
+	margin: 0;
+	min-height: 100%;
+	min-height: 100vh;
+	min-height: 100svh;
+}
+
+header nav {
+	display: flex;
+	gap: 0px;
+	background-color: black;
+}
+
+header nav a {
+	padding: 8px 4px;
+	text-decoration: none;
+	color: white;
+}
+
+header nav a:hover {
+	text-decoration: underline;
+}
+
+header nav a:first-child {
+	padding-left: 8px;
+}
+
+header nav a:last-child {
+	padding-right: 8px;
 }
 
 body > main {
+	padding: 0 8px;
 	flex-grow: 1;
 	position: relative;
 }
@@ -44,6 +68,19 @@ table tbody td {
 
 table tbody tr:nth-child(even) td {
 	background-color: #0001;
+}
+
+footer {
+	display: flex;
+	justify-content: space-between;
+	padding: 8px;
+	background-color: black;
+	color: white;
+}
+
+footer * {
+	color: white;
+	text-decoration: none;
 }
 
 .warning {
