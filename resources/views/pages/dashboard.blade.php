@@ -42,13 +42,16 @@
 							<i>no memo</i>
 						@endif
 					</td>
-					<td><a href="/transaction/{{ $transaction->id }}">
+					<td>
+						<a href="/transaction/{{ $transaction->id }}">
 							@can('update', $transaction)
 								edit
 							@else
 								view
 							@endcan
-						</a></td>
+						</a>
+						<a href="/transaction/new?clone={{ $transaction->id }}">clone</a>
+					</td>
 				</tr>
 			@endforeach
 		</tbody>

@@ -10,12 +10,25 @@ use App\Repositories\FuelPriceRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 final class TransactionController extends Controller {
-	public function new() {
-		return view("pages.transaction", ["transaction" => new Transaction()]);
+	public function new(Request $request) {
+		$request->validate([
+			'clone' => 'nullable|int|exists:transactions,id',
+		]);
+
+		if ($request->clone) {
+			$transaction = Transaction::findOrPanic($request->clone);
+			Gate::authorize('view', $transaction);
+			$transaction->id = null;
+		} else {
+			$transaction = new Transaction();
+		}
+
+		return view("pages.transaction", compact("transaction"));
 	}
 
 	public function create(Request $request) {
