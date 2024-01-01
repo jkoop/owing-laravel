@@ -20,6 +20,11 @@ trait Changeable {
 			foreach (self::$attributesNotShown as $attributeNotShown) {
 				unset($data[$attributeNotShown]);
 			}
+			foreach ($data as $key => &$value) {
+				if (($model->getCasts()[$key] ?? null) == "datetime" and $value != null) {
+					$value = date("c", strtotime($value));
+				}
+			}
 			unset($data["password"]);
 			$description = "created with data " . json_encode($data);
 			if (isset($model->password) and $model->password != null) {
@@ -39,7 +44,11 @@ trait Changeable {
 					if ($newValue == $model->getOriginal($key)) {
 						continue;
 					}
-					$newValue = json_encode($newValue);
+					if (($model->getCasts()[$key] ?? null) == "datetime" and $newValue != null) {
+						$newValue = date("c", $newValue);
+					} else {
+						$newValue = json_encode($newValue);
+					}
 					Change::record($model, "changed $key to $newValue");
 				}
 			}

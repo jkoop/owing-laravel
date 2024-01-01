@@ -4,14 +4,15 @@
 
 	{{-- prettier-ignore --}}
 	@php($data = [
-	'kind' => $transaction->kind,
-	'car_id' => $transaction->car_id,
-	'from_to' => $transaction->from_user_id == Auth::id() ? 'from' : 'to',
-	'other_user_id' => $transaction->from_user_id == Auth::id() ? $transaction->to_user_id : $transaction->from_user_id,
-	'amount' => $transaction->amount,
-	'distance' => $transaction->distance,
-	'occurred_at' => $transaction->occurred_at?->format('Y-m-d'),
-	'memo' => $transaction->memo,
+	'kind' => old('kind', $transaction->kind),
+	'car_id' => old('car_id', $transaction->car_id),
+	'from_to' => old('from_to', $transaction->from_user_id == Auth::id() ? 'from' : 'to'),
+	'other_user_id' => old('other_user_id', $transaction->from_user_id == Auth::id() ? $transaction->to_user_id :
+	$transaction->from_user_id),
+	'amount' => old('amount', $transaction->amount),
+	'distance' => old('distance', $transaction->distance),
+	'occurred_at' => old('occurred_at', $transaction->occurred_at?->format('Y-m-d')),
+	'memo' => old('memo', $transaction->memo),
 	'my_cars' => Auth::user()->cars->pluck('id')->toArray(),
 	'disabled' => !Auth::user()->can('update', $transaction),
 	])
@@ -91,13 +92,15 @@
 			<fieldset x-cloak
 				x-show="(kind && kind != 'drivetrak' && from_to && other_user_id && amount) || (kind == 'drivetrak' && car_id && (!my_cars.includes(parseInt(car_id)) || my_cars.includes(parseInt(car_id)) && other_user_id) && distance)"
 				x-transition>
-				<legend x-show="kind && kind != 'drivetrak' && from_to && other_user_id && amount">When should this be considered to
-					have happened / will happen?</legend>
+				<legend x-show="kind && kind != 'drivetrak' && from_to && other_user_id && amount">
+					When should this be considered to have happened / will happen?
+				</legend>
 				<legend x-show="kind == 'drivetrak' && car_id && my_cars.includes(parseInt(car_id)) && other_user_id && distance">
-					When
-					did/will he drive it?</legend>
-				<legend x-show="kind == 'drivetrak' && car_id && !my_cars.includes(parseInt(car_id)) && distance">When did/will you
-					drive it?</legend>
+					When did/will he drive it?
+				</legend>
+				<legend x-show="kind == 'drivetrak' && car_id && !my_cars.includes(parseInt(car_id)) && distance">
+					When did/will you drive it?
+				</legend>
 				<x-input name="occurred_at" type="date" />
 			</fieldset>
 
@@ -119,6 +122,14 @@
 					x-show="kind == 'drivetrak' && car_id && (!my_cars.includes(parseInt(car_id)) || my_cars.includes(parseInt(car_id)) && other_user_id) && distance"
 					x-transition>Aprox amount to transact: <span
 						x-text="axios.get(`/calculate/trip-price?car_id=${car_id}&distance=${distance}&date=${occurred_at}`).then(r => r.data).catch(e => e.code)"></span>
+					@if (!empty($errors->get('amount')) > 0)
+						<br>
+						<div class="validation-errors">
+							@foreach ($errors->get('amount') as $error)
+								{{ $error }}<br>
+							@endforeach
+						</div>
+					@endif
 				</p>
 
 				<button x-cloak

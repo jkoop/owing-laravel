@@ -18,11 +18,15 @@ final class TransactionController extends Controller {
 		return view("pages.transaction", ["transaction" => new Transaction()]);
 	}
 
+	public function create(Request $request) {
+		return $this->update(new Transaction(), $request);
+	}
+
 	public function view(Transaction $transaction) {
 		return view("pages.transaction", compact("transaction"));
 	}
 
-	public function create(Request $request) {
+	public function update(Transaction $transaction, Request $request) {
 		DB::beginTransaction(); // prevent races
 
 		$request->validate([
@@ -46,7 +50,7 @@ final class TransactionController extends Controller {
 			$fromUser = $request->from_to == "to" ? Auth::user() : $otherUser;
 			$toUser = $request->from_to != "to" ? Auth::user() : $otherUser;
 
-			$transaction = Transaction::create([
+			$transaction->fill([
 				"kind" => $request->kind,
 				"from_user_id" => $fromUser->id,
 				"to_user_id" => $toUser->id,
@@ -57,7 +61,7 @@ final class TransactionController extends Controller {
 				"memo" => trim($request->memo ?? ""),
 				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
 			]);
-
+			$transaction->save();
 			DB::commit();
 
 			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
@@ -82,7 +86,7 @@ final class TransactionController extends Controller {
 			$fromUser = $car->owner_id == Auth::id() ? Auth::user() : $otherUser;
 			$toUser = $car->owner_id != Auth::id() ? Auth::user() : $otherUser;
 
-			$transaction = Transaction::create([
+			$transaction->fill([
 				"kind" => "drivetrak",
 				"from_user_id" => $fromUser->id,
 				"to_user_id" => $toUser->id,
@@ -93,7 +97,7 @@ final class TransactionController extends Controller {
 				"memo" => trim($request->memo ?? ""),
 				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
 			]);
-
+			$transaction->save();
 			DB::commit();
 
 			return Redirect::to("/transaction/$transaction->id")->with("success", "Saved");
