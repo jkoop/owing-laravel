@@ -76,7 +76,7 @@
 	@endcan
 
 	@if ($car->id)
-		@include('blocks.change-history', ['model' => $car])
+		<livewire:change-history :model="$car" lazy />
 	@endif
 
 @endsection

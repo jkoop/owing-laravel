@@ -2,10 +2,6 @@
 	text-wrap: nowrap;
 }
 
-.change-history td {
+.change-history td:nth-child(3) {
 	word-break: break-word;
-}
-
-.change-history tr:nth-child(even) td {
-	background-color: #0001;
 }

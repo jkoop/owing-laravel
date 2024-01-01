@@ -58,7 +58,7 @@
 	</form>
 
 	@if ($user->id)
-		@include('blocks.change-history', ['model' => $user])
+		<livewire:change-history :model="$user" lazy />
 	@endif
 
 @endsection

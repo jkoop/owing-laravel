@@ -150,7 +150,7 @@
 	@endcan
 
 	@if ($transaction->id)
-		@include('blocks.change-history', ['model' => $transaction])
+		<livewire:change-history :model="$transaction" lazy />
 	@endif
 
 @endsection

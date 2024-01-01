@@ -34,6 +34,18 @@ fieldset {
 	width: fit-content;
 }
 
+table {
+	border-collapse: collapse;
+}
+
+table tbody td {
+	padding: 2px 4px;
+}
+
+table tbody tr:nth-child(even) td {
+	background-color: #0001;
+}
+
 .warning {
 	padding: 1rem;
 	background-color: #f80;
