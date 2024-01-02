@@ -6,6 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 	<title>@yield('title') - {{ config('app.name') }}</title>
 	<link type="image/svg+xml" href="/favicon.svg?v={{ filemtime(public_path('/favicon.svg')) }}" rel="icon" />
+	<link href="https://fonts.googleapis.com" rel="preconnect">
+	<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Slabo+27px&display=swap" rel="stylesheet">
 	@vite('resources/css/app.css')
 	@vite('resources/js/app.js')
 </head>
@@ -24,7 +27,7 @@
 				<a href="/u">Users</a>
 			@endcan
 			@auth
-				<a href="/profile" class="ml-auto">Profile</a>
+				<a class="ml-auto" href="/profile">Profile</a>
 				<a href="/logout">Logout</a>
 			@endauth
 		</nav>

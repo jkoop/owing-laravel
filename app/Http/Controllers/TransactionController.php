@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Validator;
 final class TransactionController extends Controller {
 	public function new(Request $request) {
 		$request->validate([
-			'clone' => 'nullable|int|exists:transactions,id',
+			"clone" => "nullable|int|exists:transactions,id",
 		]);
 
 		if ($request->clone) {
 			$transaction = Transaction::findOrPanic($request->clone);
-			Gate::authorize('view', $transaction);
+			Gate::authorize("view", $transaction);
 			$transaction->id = null;
 		} else {
 			$transaction = new Transaction();
