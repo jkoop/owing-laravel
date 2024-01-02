@@ -66,11 +66,13 @@ table {
 	border-collapse: collapse;
 }
 
-table tbody td {
+table tbody td,
+table tbody th {
 	padding: 2px 4px;
 }
 
-table tbody tr:nth-child(even) td {
+table tbody tr:nth-child(even) td,
+table tbody tr:nth-child(even) th {
 	background-color: #0001;
 }
 
@@ -92,7 +94,7 @@ footer a:hover {
 }
 
 .warning {
-	padding: 1rem;
+	padding: 0.5rem;
 	background-color: #f80;
 	color: #000;
 	display: block;
