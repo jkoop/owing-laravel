@@ -16,6 +16,10 @@ body {
 	min-height: 100svh;
 }
 
+hidden {
+	display: none;
+}
+
 header nav {
 	display: flex;
 	gap: 0px;
@@ -81,6 +85,10 @@ footer {
 footer * {
 	color: white;
 	text-decoration: none;
+}
+
+footer a:hover {
+	text-decoration: underline;
 }
 
 .warning {

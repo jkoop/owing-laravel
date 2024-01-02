@@ -11,6 +11,9 @@
 </head>
 
 <body>
+	<hidden>
+		<x-spinner id="spinner" />
+	</hidden>
 	<header>
 		<nav>
 			@auth

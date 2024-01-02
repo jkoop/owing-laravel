@@ -1,1 +1,1 @@
-<div class="spinner"></div>
+<div {{ $attributes->merge(['class' => 'spinner']) }}></div>
