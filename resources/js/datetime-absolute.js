@@ -1,4 +1,4 @@
-window.addEventListener("DOMContentLoaded", () => {
+window.renderDatetimeAbsolute = () => {
 	document.querySelectorAll("time.datetime-absolute").forEach((time) => {
 		const date = new Date(time.dateTime)
 		const year = date.getFullYear()
@@ -12,4 +12,6 @@ window.addEventListener("DOMContentLoaded", () => {
 		time.innerText = `${year} ${month} ${day} ${hour}:${minute}`
 		time.title = date
 	})
-})
+}
+
+window.renderDatetimeAbsolute()

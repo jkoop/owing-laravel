@@ -13,16 +13,16 @@
 				<tr>
 					<td>Efficiency</td>
 					<td>
-						<x-input name="efficiency" type="number" min="0.0001" max="10" step="0.0001" :value="$car->efficiency" required />
+						<x-input name="efficiency" type="number" min="0.0001" max="10" step="0.0001" :value="$car->efficiency?->efficiency" required />
 						L/km;
 						<x-dollar-efficiency :car="$car" with-time />
 					</td>
 				</tr>
 				<tr>
 					<td>Fuel Type</td>
-					<td><x-select name="fuel_type" :selected="$car->fuel_type" required>
+					<td><x-select name="fuel_type" :selected="$car->fuelType?->fuel_type" required>
 							<option></option>
-							@foreach (App\Models\Car::FUEL_TYPES as $fuelTypeId => $fuelType)
+							@foreach (App\Models\CarFuelType::FUEL_TYPES as $fuelTypeId => $fuelType)
 								<x-select.option :value="$fuelTypeId">{{ $fuelType }}</x-select.option>
 							@endforeach
 						</x-select></td>
@@ -58,11 +58,12 @@
 			</tr>
 			<tr>
 				<th>Efficiency</th>
-				<td>{{ number_format($car->efficiency, 4) }} L/km; <x-dollar-efficiency :car="$car" with-time /></td>
+				<td>{{ number_format($car->efficiency->efficiency, 4) }} L/km; <x-dollar-efficiency :car="$car" with-time />
+				</td>
 			</tr>
 			<tr>
 				<th>Fuel Type</th>
-				<td>{{ App\Models\Car::FUEL_TYPES[$car->fuel_type] }}</td>
+				<td>{{ App\Models\CarFuelType::FUEL_TYPES[$car->fuelType->fuel_type] }}</td>
 			</tr>
 			<tr>
 				<th>Owner</th>
@@ -76,7 +77,7 @@
 	@endcan
 
 	@if ($car->id)
-		<livewire:change-history :model="$car" lazy />
+		<livewire:change-history :model="$car" />
 	@endif
 
 @endsection

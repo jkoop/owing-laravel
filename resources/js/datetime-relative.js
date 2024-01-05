@@ -1,4 +1,4 @@
-const datetimeRelative = () => {
+window.renderDatetimeRelative = () => {
 	const now = new Date()
 	const second = 1000
 	const minute = second * 60
@@ -47,5 +47,6 @@ const datetimeRelative = () => {
 	})
 }
 
-setInterval(datetimeRelative, 1000)
-datetimeRelative()
+setInterval(window.renderDatetimeRelative, 1000)
+document.addEventListener("DOMContentLoaded", window.renderDatetimeRelative)
+window.renderDatetimeRelative()

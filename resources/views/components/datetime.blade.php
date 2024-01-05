@@ -3,15 +3,15 @@
 @if ($datetime == null)
 	<i>none</i>
 @elseif ($relative)
-	@once
-		@vite('resources/js/datetime-relative.js')
-	@endonce
-
-	<time class="datetime-relative" datetime="{{ $datetime->format('r') }}">{{ $datetime }}</time>
+	<time class="datetime-relative" datetime="{{ $datetime->format('r') }}"
+		@once
+x-init="if (typeof window.renderDatetimeRelative == 'function') window.renderDatetimeRelative()" @endonce>
+		{{ $datetime }}
+	</time>
 @else
-	@once
-		@vite('resources/js/datetime-absolute.js')
-	@endonce
-
-	<time class="datetime-absolute" datetime="{{ $datetime->format('r') }}">{{ $datetime }}</time>
+	<time class="datetime-absolute" datetime="{{ $datetime->format('r') }}"
+		@once
+x-init="if (typeof window.renderDatetimeAbsolute == 'function') window.renderDatetimeAbsolute()" @endonce>
+		{{ $datetime }}
+	</time>
 @endif

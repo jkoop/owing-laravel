@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Car;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,14 +13,38 @@ return new class extends Migration {
 		Schema::create("cars", function (Blueprint $table) {
 			$table->id();
 			$table->string("name")->unique();
-			$table->unsignedFloat("efficiency");
-			$table->enum("fuel_type", ["gasoline", "diesel"]);
 			$table->foreignId("owner_id")->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 
 			$table
 				->foreign("owner_id")
+				->references("id")
+				->on("users");
+		});
+
+		Schema::create("car_efficiencies", function (Blueprint $table) {
+			$table->id();
+			$table->foreignIdFor(Car::class);
+			$table->unsignedFloat("efficiency");
+			$table->foreignId("author_id")->nullable();
+			$table->timestamps();
+
+			$table
+				->foreign("author_id")
+				->references("id")
+				->on("users");
+		});
+
+		Schema::create("car_fuel_types", function (Blueprint $table) {
+			$table->id();
+			$table->foreignIdFor(Car::class);
+			$table->enum("fuel_type", ["gasoline", "diesel"]);
+			$table->foreignId("author_id")->nullable();
+			$table->timestamps();
+
+			$table
+				->foreign("author_id")
 				->references("id")
 				->on("users");
 		});
@@ -83,12 +108,13 @@ return new class extends Migration {
 			$table->foreignId("to_user_id");
 			$table->unsignedFloat("amount");
 			$table->boolean("confirmed");
-			$table->unsignedFloat("distance")->nullable();
 			$table->string("memo");
 			$table
 				->foreignId("car_id")
 				->nullable()
 				->comment("if this is a DriveTrak-style entry");
+			$table->unsignedFloat("distance")->nullable();
+			$table->unsignedFloat("ratio")->nullable();
 			$table->dateTime("occurred_at")->index();
 			$table->timestamps();
 			$table->softDeletes();

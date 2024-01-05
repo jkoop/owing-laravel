@@ -2,7 +2,7 @@
 @section('title', 'Dashboard')
 @section('content')
 
-	<livewire:owing-totals lazy />
+	<livewire:owing-totals />
 
 	<h2>Ledger</h2>
 

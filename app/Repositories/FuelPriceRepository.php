@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Car;
+use App\Models\CarFuelType;
 use App\Models\FuelPrice;
 use Carbon\Carbon;
 
@@ -10,7 +10,7 @@ class FuelPriceRepository {
 	private static $prices = [];
 
 	private static function getTypes(): array {
-		return array_keys(Car::FUEL_TYPES);
+		return array_keys(CarFuelType::FUEL_TYPES);
 	}
 
 	public static function getAllFuelPrices(): object {

@@ -58,7 +58,7 @@
 	</form>
 
 	@if ($user->id)
-		<livewire:change-history :model="$user" lazy />
+		<livewire:change-history :model="$user" />
 	@endif
 
 @endsection

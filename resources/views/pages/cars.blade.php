@@ -27,8 +27,8 @@
 			@foreach ($cars->sortBy('name') as $car)
 				<tr>
 					<td><x-car :car="$car" /></td>
-					<td>{{ number_format($car->efficiency, 4) }}L/km; <x-dollar-efficiency :car="$car" /></td>
-					<td>{{ $car->fuel_type }}</td>
+					<td>{{ number_format($car->efficiency->efficiency, 4) }}L/km; <x-dollar-efficiency :car="$car" /></td>
+					<td>{{ $car->fuelType->fuel_type }}</td>
 					<td><x-user :user="$car->owner" /></td>
 					@if (request()->has('deleted'))
 						<td><x-datetime :datetime="$car->deleted_at" relative /></td>

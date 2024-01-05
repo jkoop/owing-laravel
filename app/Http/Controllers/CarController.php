@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\CarEfficiency;
+use App\Models\CarFuelType;
 use App\Rules\UniqueCi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 final class CarController extends Controller {
@@ -30,17 +33,17 @@ final class CarController extends Controller {
 	}
 
 	public function update(Car $car, Request $request) {
+		DB::beginTransaction();
+
 		$request->validate([
 			"name" => ["required", "string", "ascii", new UniqueCi("cars", ignoreRowId: $car->id ?? [])],
 			"efficiency" => "required|numeric|min:0.0001|max:10",
-			"fuel_type" => "required|in:" . implode(",", array_keys(Car::FUEL_TYPES)),
+			"fuel_type" => "required|in:" . implode(",", array_keys(CarFuelType::FUEL_TYPES)),
 			"owner_id" => "nullable|integer|exists:users,id",
 		]);
 
 		$data = [
 			"name" => $request->name,
-			"efficiency" => round($request->efficiency, 4),
-			"fuel_type" => $request->fuel_type,
 			"owner_id" => Auth::user()->is_admin ? $request->owner_id : Auth::id(),
 		];
 
@@ -48,18 +51,37 @@ final class CarController extends Controller {
 			$data["owner_id"] = (int) $data["owner_id"];
 		}
 
+		$car->fill($data);
+		$car->save();
+
+		if (round($request->efficiency, 4) != $car->efficiency->efficiency) {
+			CarEfficiency::create([
+				"car_id" => $car->id,
+				"efficiency" => round($request->efficiency, 4),
+				"author_id" => Auth::id(),
+			]);
+		}
+
+		if ($request->fuel_type != $car->fuelType->fuel_type) {
+			CarFuelType::create([
+				"car_id" => $car->id,
+				"fuel_type" => $request->fuel_type,
+				"author_id" => Auth::id(),
+			]);
+		}
+
 		if ($car->id) {
-			$car->update($data);
 			if ($request->has("delete")) {
 				$car->delete();
 			}
 			if ($request->has("restore")) {
 				$car->restore();
 			}
+
+			DB::commit();
 			return Redirect::back()->with("success", "Saved");
 		} else {
-			$car->fill($data);
-			$car->save();
+			DB::commit();
 			return Redirect::to("/c/" . $car->id)->with("success", "Saved");
 		}
 	}

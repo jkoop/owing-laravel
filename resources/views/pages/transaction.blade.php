@@ -11,6 +11,7 @@
 	$transaction->from_user_id),
 	'amount' => old('amount', $transaction->amount),
 	'distance' => old('distance', $transaction->distance),
+	'ratio' => old('ratio', $transaction->ratio ?? '1'),
 	'occurred_at' => old('occurred_at', $transaction->occurred_at?->format('Y-m-d')),
 	'memo' => old('memo', $transaction->memo),
 	'my_cars' => Auth::user()->cars->pluck('id')->toArray(),
@@ -78,6 +79,24 @@
 				x-transition>
 				<legend>How far?</legend>
 				<span><x-input name="distance" type="number" style="max-width:70px" step="0.01" min="0" />km</span>
+				<label>Ratio: <x-select name="ratio">
+						<option value="{{ 1 / 1 }}">1/1</option>
+						<option value="{{ 7 / 8 }}">7/8</option>
+						<option value="{{ 5 / 6 }}">5/6</option>
+						<option value="{{ 4 / 5 }}">4/5</option>
+						<option value="{{ 3 / 4 }}">3/4</option>
+						<option value="{{ 2 / 3 }}">2/3</option>
+						<option value="{{ 5 / 8 }}">5/8</option>
+						<option value="{{ 3 / 5 }}">3/5</option>
+						<option value="{{ 1 / 2 }}">1/2</option>
+						<option value="{{ 2 / 5 }}">2/5</option>
+						<option value="{{ 3 / 8 }}">3/8</option>
+						<option value="{{ 1 / 3 }}">1/3</option>
+						<option value="{{ 1 / 4 }}">1/4</option>
+						<option value="{{ 1 / 5 }}">1/5</option>
+						<option value="{{ 1 / 6 }}">1/6</option>
+						<option value="{{ 1 / 8 }}">1/8</option>
+					</x-select></label>
 			</fieldset>
 
 			<fieldset x-cloak x-show="kind && kind != 'drivetrak' && from_to && other_user_id" x-transition>
@@ -121,7 +140,7 @@
 				<p x-cloak
 					x-show="kind == 'drivetrak' && car_id && (!my_cars.includes(parseInt(car_id)) || my_cars.includes(parseInt(car_id)) && other_user_id) && distance"
 					x-transition>Aprox amount to transact: <span
-						x-text="axios.get(`/calculate/trip-price?car_id=${car_id}&distance=${distance}&date=${occurred_at}`).then(r => r.data).catch(e => e.code)"></span>
+						x-text="axios.get(`/calculate/trip-price?car_id=${car_id}&distance=${distance}&ratio=${ratio}&date=${occurred_at}`).then(r => r.data).catch(e => e.code)"></span>
 					@if (!empty($errors->get('amount')) > 0)
 						<br>
 						<div class="validation-errors">
@@ -150,7 +169,7 @@
 	@endcan
 
 	@if ($transaction->id)
-		<livewire:change-history :model="$transaction" lazy />
+		<livewire:change-history :model="$transaction" />
 	@endif
 
 @endsection

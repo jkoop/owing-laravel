@@ -14,7 +14,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach ($model->changes()->with('author')->orderByDesc('created_at')->orderByDesc('id')->get() as $change)
+			@foreach ($changes as $change)
 				<tr>
 					<td><x-datetime :datetime="$change->created_at" /></td>
 					<td><x-user :user="$change->author" noName="system" /></td>
