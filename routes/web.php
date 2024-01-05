@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
@@ -21,6 +22,8 @@ Route::middleware("auth")->group(function () {
 		->can("update", "car");
 
 	Route::middleware("can:isAdmin")->group(function () {
+		Route::get("import", [ImportController::class, "view"]);
+
 		Route::get("u", [UserController::class, "index"]);
 		Route::get("u/new", [UserController::class, "new"]);
 		Route::post("u/new", [UserController::class, "create"]);
