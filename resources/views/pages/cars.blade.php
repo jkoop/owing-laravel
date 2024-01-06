@@ -1,25 +1,25 @@
 @extends('layouts.default')
-@section('title', 'Cars')
+@section('title', t('Cars'))
 @section('content')
 
 	<nav>
-		<a href="/c/new">New</a>
+		<a href="/c/new">@t('New')</a>
 		@if (request()->has('deleted'))
-			<a href="/c">Hide deleted</a>
+			<a href="/c">@t('Hide deleted')</a>
 		@else
-			<a href="/c?deleted">Show deleted</a>
+			<a href="/c?deleted">@t('Show deleted')</a>
 		@endif
 	</nav>
 
 	<table>
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Efficiency</th>
-				<th>Fuel Type</th>
-				<th>Owner</th>
+				<th>@t('Name')</th>
+				<th>@t('Efficiency')</th>
+				<th>@t('Fuel Type')</th>
+				<th>@t('Owner')</th>
 				@if (request()->has('deleted'))
-					<th>Deleted</th>
+					<th>@t('Deleted')</th>
 				@endif
 			</tr>
 		</thead>
@@ -28,7 +28,7 @@
 				<tr>
 					<td><x-car :car="$car" /></td>
 					<td>{{ number_format($car->efficiency->efficiency, 4) }}L/km; <x-dollar-efficiency :car="$car" /></td>
-					<td>{{ $car->fuelType->fuel_type }}</td>
+					<td>@t(App\Models\CarFuelType::FUEL_TYPES[$car->fuelType->fuel_type])</td>
 					<td><x-user :user="$car->owner" /></td>
 					@if (request()->has('deleted'))
 						<td><x-datetime :datetime="$car->deleted_at" relative /></td>
@@ -37,7 +37,7 @@
 			@endforeach
 			@if ($cars->count() < 1)
 				<tr>
-					<td colspan="3"><i>no cars</i></td>
+					<td colspan="3"><i>@t('no cars')</i></td>
 				</tr>
 			@endif
 		</tbody>

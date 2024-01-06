@@ -1,11 +1,14 @@
 @props(['car', 'withTime' => false])
 
-@if ($car->fuel_type != null)
-	@php($fuelPrice = FuelPriceRepository::getFuelPrice($car->fuel_type))
+@if ($car->fuelType->fuel_type != null)
+	@php($fuelPrice = FuelPriceRepository::getFuelPrice($car->fuelType->fuel_type))
 
-	${{ number_format($fuelPrice->price * $car->efficiency, 2) }}/km
 	@if ($withTime)
-		as of
-		<x-datetime :datetime="$fuelPrice->created_at" relative />
+		@t(':moneyPerDistance as of :date', [
+		    'moneyPerDistance' => '$' . number_format($fuelPrice->price * $car->efficiency->efficiency, 2) . '/km',
+		    'date' => c('datetime', ['datetime' => $fuelPrice->created_at, 'relative' => true]),
+		])
+	@else
+		${{ number_format($fuelPrice->price * $car->efficiency->efficiency, 2) }}/km
 	@endif
 @endif

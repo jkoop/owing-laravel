@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-CA">
+<html lang="{{ str_replace('_', '-', App::currentLocale()) }}">
 
 <head>
 	<meta charset="utf-8">
@@ -7,11 +7,20 @@
 	<title>@yield('title') - {{ config('app.name') }}</title>
 
 	<link type="image/svg+xml" href="/favicon.svg?v={{ filemtime(public_path('/favicon.svg')) }}" rel="icon" />
-	<link href="https://fonts.googleapis.com" rel="preconnect">
-	<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Slabo+27px&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com" rel="preconnect" />
+	<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet" />
+	<link type="font/woff2" href="/fonts/QuikscriptSans.woff2" rel="preload" as="font" crossorigin />
 
 	@vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/datetime-absolute.js', 'resources/js/datetime-relative.js'])
+
+	<style>
+		@font-face {
+			font-display: swap;
+			font-family: "Quikscript Sans";
+			src: url("/fonts/QuikscriptSans.woff2");
+		}
+	</style>
 </head>
 
 <body>
@@ -21,15 +30,15 @@
 	<header>
 		<nav>
 			@auth
-				<a href="/">Dashboard</a>
-				<a href="/c">Cars</a>
+				<a href="/">@t('Dashboard')</a>
+				<a href="/c">@t('Cars')</a>
 			@endauth
 			@can('isAdmin')
-				<a href="/u">Users</a>
+				<a href="/u">@t('Users')</a>
 			@endcan
 			@auth
-				<a class="ml-auto" href="/profile">Profile</a>
-				<a href="/logout">Logout</a>
+				<a class="ml-auto" href="/profile">@t('Profile')</a>
+				<a href="/logout">@t('Logout')</a>
 			@endauth
 		</nav>
 	</header>
@@ -40,7 +49,7 @@
 		@yield('content')
 	</main>
 	<footer>
-		<span>Page took {{ number_format(microtime(true) - LARAVEL_START, 2) }}s</span>
+		<span>@t('Page took {:time}s', ['time' => number_format(microtime(true) - LARAVEL_START, 2)])</span>
 		@auth
 			<span><a href="/profile">{{ Auth::user()->name }}</a></span>
 		@endauth

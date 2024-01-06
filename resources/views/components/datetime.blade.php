@@ -1,7 +1,7 @@
 @props(['datetime', 'relative' => false])
 
 @if ($datetime == null)
-	<i>none</i>
+	<i>@t('none')</i>
 @elseif ($relative)
 	<time class="datetime-relative" datetime="{{ $datetime->format('r') }}"
 		@once

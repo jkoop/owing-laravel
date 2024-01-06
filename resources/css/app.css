@@ -4,7 +4,11 @@
 
 * {
 	box-sizing: border-box;
-	font-family: "Slabo 27px", slab-serif, sans-serif;
+	font-family: "Noto Sans", "Quikscript Sans", sans-serif;
+}
+
+[lang="en-Qaas"] {
+	font-family: "Quikscript Sans", "Noto Sans", sans-serif;
 }
 
 body {

@@ -23,12 +23,12 @@ final class AuthenticationController extends Controller {
 			return back()->withErrors(["username" => __("auth.failed")]);
 		}
 		Auth::login($user, $request->has("remember_me"));
-		return Redirect::intended()->with("success", "Welcome");
+		return Redirect::intended()->with("success", t("welcome"));
 	}
 
 	public function logout() {
 		Auth::logout();
 		Session::regenerate();
-		return Redirect::to("/login")->with("success", "Goodbye");
+		return Redirect::to("/login")->with("success", t("goodbye"));
 	}
 }

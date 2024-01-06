@@ -1,29 +1,31 @@
 @extends('layouts.default')
-@section('title', 'Dashboard')
+@section('title', t('Dashboard'))
 @section('content')
 
 	<livewire:owing-totals />
 
-	<h2>Ledger</h2>
+	{{ App::currentLocale() }}
+
+	<h2>@t('Ledger')</h2>
 
 	<nav>
-		<a href="/t/new">New</a>
+		<a href="/t/new">@t('New')</a>
 		@if (request()->has('deleted'))
-			<a href="/">Hide deleted</a>
+			<a href="/">@t('Hide deleted')</a>
 		@else
-			<a href="/?deleted">Show deleted</a>
+			<a href="/?deleted">@t('Show deleted')</a>
 		@endif
 	</nav>
 
 	<table>
 		<thead>
 			<tr>
-				<th>Occurred At</th>
-				<th>From</th>
-				<th>To</th>
-				<th>Amount</th>
-				<th>Car</th>
-				<th>Memo</th>
+				<th>@t('Occurred at')</th>
+				<th>@t('From')</th>
+				<th>@t('To')</th>
+				<th>@t('Amount')</th>
+				<th>@t('Car')</th>
+				<th>@t('Memo')</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -39,18 +41,18 @@
 						@if ($transaction->memo != null)
 							{{ $transaction->memo }}
 						@else
-							<i>no memo</i>
+							<i>@t('no memo')</i>
 						@endif
 					</td>
 					<td>
-						<a href="/t/{{ $transaction->id }}">
+						<a class="inline-block" href="/t/{{ $transaction->id }}">
 							@can('update', $transaction)
-								edit
+								@t('edit')
 							@else
-								view
+								@t('view')
 							@endcan
 						</a>
-						<a href="/t/new?clone={{ $transaction->id }}">clone</a>
+						<a href="/t/new?clone={{ $transaction->id }}">@t('clone')</a>
 					</td>
 				</tr>
 			@endforeach

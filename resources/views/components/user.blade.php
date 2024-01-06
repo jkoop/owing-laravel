@@ -1,5 +1,5 @@
 @props([
-    'noName' => 'nobody',
+    'noName' => t('nobody'),
     'user',
 ])
 
