@@ -6,12 +6,13 @@ use App\Traits\Changeable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Transaction extends Model {
 	use Changeable, SoftDeletes;
 
 	protected $casts = [
-		"confirmed" => "boolean",
+		"is_confirmed" => "boolean",
 		"occurred_at" => "datetime",
 	];
 
@@ -29,5 +30,15 @@ class Transaction extends Model {
 
 	public function userTo(): BelongsTo {
 		return $this->belongsTo(User::class, "to_user_id")->withTrashed();
+	}
+
+	public function otherUser(): BelongsTo {
+		if ($this->from_user_id == Auth::id()) return $this->userTo();
+		else return $this->userFrom();
+	}
+
+	public function getCreditAttribute(): float {
+		if ($this->from_user_id == Auth::id()) return $this->amount * -1;
+		else return $this->amount;
 	}
 }

@@ -107,7 +107,7 @@ return new class extends Migration {
 			$table->foreignId("from_user_id");
 			$table->foreignId("to_user_id");
 			$table->unsignedFloat("amount");
-			$table->boolean("confirmed");
+			$table->boolean("is_confirmed");
 			$table->string("memo");
 			$table
 				->foreignId("car_id")

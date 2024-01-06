@@ -1,6 +1,6 @@
 <ul>
 	@foreach ($users as $user)
-		@php($owing = $user->getOwing(Auth::user()))
+		@php($owing = Auth::user()->getOwing($user))
 		@if ($owing > 0)
 			<li>
 				@t('You owe :user :money', [
@@ -10,7 +10,7 @@
 			</li>
 		@elseif ($owing == 0)
 			@continue ($user->deleted_at != null)
-			<li>@t(':user and you are even', [
+			<li class="opacity-50">@t(':user and you are even', [
 			    'user' => c('user', ['user' => $user]),
 			])</li>
 		@else

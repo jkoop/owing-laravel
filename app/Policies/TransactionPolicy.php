@@ -11,8 +11,8 @@ final class TransactionPolicy {
 	}
 
 	public function update(User $user, Transaction $transaction) {
-		return $transaction->id == null or // for new transactions
-			$transaction->from_user_id == $user->id or
-			$transaction->to_user_id == $user->id;
+		return $transaction->id == null; // or // for new transactions
+		// $transaction->from_user_id == $user->id or
+		// $transaction->to_user_id == $user->id;
 	}
 }

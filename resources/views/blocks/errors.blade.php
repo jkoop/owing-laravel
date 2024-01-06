@@ -2,12 +2,22 @@
 	@vite('resources/css/errors.css')
 @endif
 
-@if ($errors->count() == 1)
+@php
+	$errors = $errors->toArray();
+	$standaloneErrors = array_filter($errors, 'is_numeric', ARRAY_FILTER_USE_KEY);
+	$validationErrors = array_filter($errors, fn($a) => !is_numeric($a), ARRAY_FILTER_USE_KEY);
+@endphp
+
+@if (!empty($errors))
 	<div id="errors">
-		@t('A validation error occurred. Please check the form and try again.')
-	</div>
-@elseif ($errors->count() > 1)
-	<div id="errors">
-		@t('Validation errors occurred. Please check the form and try again.')
+		@foreach ($standaloneErrors as $error)
+			{{ $error }}<br>
+		@endforeach
+
+		@if (count($validationErrors) == 1)
+			@t('A validation error occurred. Please check the form and try again.')
+		@elseif (count($validationErrors) > 1)
+			@t('Validation errors occurred. Please check the form and try again.')
+		@endif
 	</div>
 @endif

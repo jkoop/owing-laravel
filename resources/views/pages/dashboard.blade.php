@@ -4,8 +4,6 @@
 
 	<livewire:owing-totals />
 
-	{{ App::currentLocale() }}
-
 	<h2>@t('Ledger')</h2>
 
 	<nav>
@@ -19,11 +17,28 @@
 
 	<table>
 		<thead>
-			<tr>
+			<tr x-data="{{ json_encode([
+				'user_id' => request()->user_id,
+				'disabled' => false,
+			]) }}">
 				<th>@t('Occurred at')</th>
-				<th>@t('From')</th>
-				<th>@t('To')</th>
-				<th>@t('Amount')</th>
+				<th>
+					@t('User')
+					<button x-show="user_id===null" @click="user_id=-1">=</button>
+					<x-select
+						name="user_id"
+						x-show="user_id!==null"
+						onchange="location.href=`?user_id=${this.value}`"
+						x-cloak
+					>
+						<option></option>
+						@foreach ($users as $user)
+							<x-select.option value="{{ $user->id }}">{{ $user->name }}</x-select.option>
+						@endforeach
+					</x-select>
+					<x-spinner x-show="false" />
+				</th>
+				<th>@t('Credit')</th>
 				<th>@t('Car')</th>
 				<th>@t('Memo')</th>
 				<th></th>
@@ -33,9 +48,14 @@
 			@foreach ($transactions as $transaction)
 				<tr>
 					<td><x-datetime :datetime="$transaction->occurred_at" /></td>
-					<td><x-user :user="$transaction->userFrom" /></td>
-					<td><x-user :user="$transaction->userTo" /></td>
-					<td>${{ number_format($transaction->amount, 2) }}</td>
+					<td><x-user :user="$transaction->otherUser" /></td>
+					<td>
+						@if ($transaction->deleted_at !== null)
+							<del>${{ number_format($transaction->credit, 2) }}</del>
+						@else
+							${{ number_format($transaction->credit, 2) }}
+						@endif
+					</td>
 					<td><x-car :car="$transaction->car" /></td>
 					<td>
 						@if ($transaction->memo != null)

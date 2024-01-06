@@ -32,14 +32,14 @@ final class TransactionController extends Controller {
 	}
 
 	public function create(Request $request) {
-		return $this->update(new Transaction(), $request);
+		return $this->update(new Transaction(), $request, $returnTo = '/');
 	}
 
 	public function view(Transaction $transaction) {
 		return view("pages.transaction", compact("transaction"));
 	}
 
-	public function update(Transaction $transaction, Request $request) {
+	public function update(Transaction $transaction, Request $request, string $returnTo = null) {
 		DB::beginTransaction(); // prevent races
 
 		$request->validate([
@@ -68,7 +68,7 @@ final class TransactionController extends Controller {
 				"from_user_id" => $fromUser->id,
 				"to_user_id" => $toUser->id,
 				"amount" => round($request->amount, 2),
-				"confirmed" => $fromUser->id == Auth::id(),
+				"is_confirmed" => $fromUser->id == Auth::id(),
 				"car_id" => null,
 				"distance" => null,
 				"memo" => trim($request->memo ?? ""),
@@ -77,7 +77,7 @@ final class TransactionController extends Controller {
 			$transaction->save();
 			DB::commit();
 
-			return Redirect::to("/t/$transaction->id")->with("success", "Saved");
+			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", "Saved");
 		} elseif ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
 			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
@@ -104,7 +104,7 @@ final class TransactionController extends Controller {
 				"from_user_id" => $fromUser->id,
 				"to_user_id" => $toUser->id,
 				"amount" => (float) $amount,
-				"confirmed" => $fromUser->id == Auth::id(),
+				"is_confirmed" => $fromUser->id == Auth::id(),
 				"car_id" => $car->id,
 				"distance" => round($request->distance, 2),
 				"memo" => trim($request->memo ?? ""),
@@ -113,7 +113,7 @@ final class TransactionController extends Controller {
 			$transaction->save();
 			DB::commit();
 
-			return Redirect::to("/t/$transaction->id")->with("success", "Saved");
+			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", "Saved");
 		} else {
 			throw new ImpossibleStateException();
 		}

@@ -10,7 +10,7 @@
 	@vite('resources/css/successes.css')
 	@vite('resources/js/successes.js')
 
-	<div id="successes">
+	<div class="{{ Session::get('success-important') ? 'important' : '' }}" id="successes">
 		@foreach ($successes as $success)
 			{{ $success }}<br>
 		@endforeach
@@ -18,5 +18,6 @@
 @endif
 
 @php
+	Session::forget('success-important');
 	Session::forget('success');
 @endphp

@@ -29,7 +29,7 @@
 				<tr>
 					<td><x-user :user="$user" /></td>
 					<td>{{ $user->username }}</td>
-					<td>{{ $user->balance }}</td>
+					<td>${{ number_format($user->balance,2) }}</td>
 					<td><x-datetime :datetime="$user
 					    ->transactions()
 					    ->orderByDesc('occurred_at')

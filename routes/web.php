@@ -23,6 +23,7 @@ Route::middleware("auth")->group(function () {
 
 	Route::middleware("can:isAdmin")->group(function () {
 		Route::get("import", [ImportController::class, "view"]);
+		Route::post("import", [ImportController::class, "import"]);
 
 		Route::get("u", [UserController::class, "index"]);
 		Route::get("u/new", [UserController::class, "new"]);

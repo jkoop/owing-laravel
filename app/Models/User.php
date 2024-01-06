@@ -29,7 +29,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 	}
 
 	public function transactions(): Builder {
-		return Transaction::where("from_user_id", $this->id)->orWhere("to_user_id", $this->id);
+		return Transaction::where(function ($query) {
+			$query->where("from_user_id", $this->id)->orWhere("to_user_id", $this->id);
+		});
 	}
 
 	public function transactionsFrom(): HasMany {
@@ -49,22 +51,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 			$from = $from->where("to_user_id", $otherGuy->id);
 		}
 
-		return $to->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount -
-			$from->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount;
+		return round($to->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount -
+			$from->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount, 2);
 	}
 
 	private array $owingMemo = [];
 
 	/**
-	 * I owe `$this->name` `$this->getOwing(Auth::user())`.
+	 * I owe `$this->name` `Auth::user()->getOwing($this)`.
 	 */
-	public function getOwing(User $me): float {
-		if (isset($this->owingMemo[$me->id])) {
-			return $this->owingMemo[$me->id];
+	public function getOwing(User $user): float {
+		if (isset($this->owingMemo[$user->id])) {
+			return $this->owingMemo[$user->id];
 		}
 
-		return $this->owingMemo[$me->id] = (function () use ($me) {
-			$owing = -$this->getBalanceAttribute($me);
+		return $this->owingMemo[$user->id] = (function () use ($user) {
+			$owing = -$this->getBalanceAttribute($user);
 			if ($owing == 0) {
 				return 0;
 			} // avoids returning negative zero

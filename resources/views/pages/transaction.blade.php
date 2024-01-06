@@ -7,8 +7,7 @@
 	'kind' => old('kind', $transaction->kind),
 	'car_id' => old('car_id', $transaction->car_id),
 	'from_to' => old('from_to', $transaction->from_user_id == Auth::id() ? 'from' : 'to'),
-	'other_user_id' => old('other_user_id', $transaction->from_user_id == Auth::id() ? $transaction->to_user_id :
-	$transaction->from_user_id),
+	'other_user_id' => old('other_user_id', $transaction->otherUser?->id),
 	'amount' => old('amount', $transaction->amount),
 	'distance' => old('distance', $transaction->distance),
 	'ratio' => old('ratio', $transaction->ratio ?? '1'),
