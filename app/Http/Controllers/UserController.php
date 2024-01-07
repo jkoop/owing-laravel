@@ -41,6 +41,7 @@ final class UserController extends Controller {
 			],
 			"name" => ["required", "string", "ascii", new UniqueCi("users", ignoreRowId: $user->id ?? [])],
 			"password" => "nullable|string|min:8",
+			"locale" => "required|string|in:en_CA,de",
 		]);
 
 		$data = [
@@ -48,6 +49,7 @@ final class UserController extends Controller {
 			"name" => $request->name,
 			"is_admin" => $request->has("is_admin"),
 			"must_change_password" => $request->has("must_change_password"),
+			"locale" => $request->locale,
 		];
 
 		if ($request->password != null) {

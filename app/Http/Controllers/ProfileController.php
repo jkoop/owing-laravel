@@ -24,11 +24,13 @@ final class ProfileController extends Controller {
 			],
 			"name" => ["required", "string", "ascii", new UniqueCi("users", ignoreRowId: Auth::id())],
 			"password" => "nullable|string|min:8",
+			"locale" => "required|string|in:en_CA,de",
 		]);
 
 		$data = [
 			"username" => strtolower($request->username),
 			"name" => $request->name,
+			"locale" => $request->locale,
 		];
 
 		if ($request->password != null) {

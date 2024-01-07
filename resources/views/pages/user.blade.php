@@ -21,6 +21,15 @@
 				<td><x-input name="password" type="password" :placeholder="t('leave blank to not change')" minlength="8" /></td>
 				<td></td>
 			</tr>
+			<tr>
+				<td>@t('Locale')</td>
+				<td><x-select name="locale" :selected="$user->locale ?? 'en_CA'">
+						@foreach (['en_CA', 'de'] as $locale)
+							<x-select.option :value="$locale">@t('this_locale_name', locale: $locale)</x-select.option>
+						@endforeach
+					</x-select></td>
+				<td></td>
+			</tr>
 
 			{{-- if we're admin and this is not the profile page --}}
 			@if (Auth::user()->is_admin and !$profile)

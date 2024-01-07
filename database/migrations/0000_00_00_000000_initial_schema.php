@@ -138,6 +138,7 @@ return new class extends Migration {
 			$table->string("username")->unique();
 			$table->string("name")->unique();
 			$table->string("password")->nullable();
+			$table->string("locale")->default("en_CA");
 			$table
 				->string("remember_token")
 				->nullable()

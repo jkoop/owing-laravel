@@ -13,8 +13,8 @@ function h(string|HtmlString $trustedString): HtmlString {
 	return new HtmlString($trustedString);
 }
 
-function t(string $key, array $attributes = []): HtmlString {
-	$translation = e(__($key));
+function t(string $key, array $attributes = [], string $locale = null): HtmlString {
+	$translation = e(__($key, locale: $locale));
 
 	foreach ($attributes as $key => $value) {
 		$value = e($value);
