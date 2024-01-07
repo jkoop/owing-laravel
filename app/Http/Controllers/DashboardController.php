@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 final class DashboardController extends Controller {
 	public function view(Request $request) {
 		$request->validate([
-			'user_id' => 'nullable|int|exists:users,id',
+			"user_id" => "nullable|int|exists:users,id",
 		]);
 
 		$transactions = Auth::user()
@@ -21,26 +21,28 @@ final class DashboardController extends Controller {
 			$transactions = $transactions->withTrashed();
 		}
 		if ($request->user_id !== null) {
-			$transactions = $transactions
-				->where(function ($query) use ($request) {
-					$query->where('from_user_id', $request->user_id)
-						->orWhere('to_user_id', $request->user_id);
-				});
+			$transactions = $transactions->where(function ($query) use ($request) {
+				$query->where("from_user_id", $request->user_id)->orWhere("to_user_id", $request->user_id);
+			});
 		}
 		$transactions = $transactions->get();
 
-		$users = DB::select(<<<SQL
+		$users = DB::select(
+			<<<SQL
 				SELECT DISTINCT "from_user_id", "to_user_id"
 				FROM "transactions"
 				WHERE "from_user_id" = :0
 					OR "to_user_id" = :1
-			SQL, [Auth::id(), Auth::id()]);
+			SQL
+			,
+			[Auth::id(), Auth::id()],
+		);
 		$users = collect($users)
-			->map(fn ($a) => [$a->from_user_id, $a->to_user_id])
+			->map(fn($a) => [$a->from_user_id, $a->to_user_id])
 			->flatten()
-			->filter(fn ($a) => $a != Auth::id())
+			->filter(fn($a) => $a != Auth::id())
 			->unique();
-		$users = User::whereIn('id', $users->toArray())->get();
+		$users = User::whereIn("id", $users->toArray())->get();
 
 		return view("pages.dashboard", compact("transactions", "users"));
 	}

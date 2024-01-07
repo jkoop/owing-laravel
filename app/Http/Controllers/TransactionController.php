@@ -32,7 +32,7 @@ final class TransactionController extends Controller {
 	}
 
 	public function create(Request $request) {
-		return $this->update(new Transaction(), $request, $returnTo = '/');
+		return $this->update(new Transaction(), $request, "/");
 	}
 
 	public function view(Transaction $transaction) {
@@ -77,7 +77,7 @@ final class TransactionController extends Controller {
 			$transaction->save();
 			DB::commit();
 
-			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", "Saved");
+			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
 		} elseif ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
 			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
@@ -113,7 +113,7 @@ final class TransactionController extends Controller {
 			$transaction->save();
 			DB::commit();
 
-			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", "Saved");
+			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
 		} else {
 			throw new ImpossibleStateException();
 		}

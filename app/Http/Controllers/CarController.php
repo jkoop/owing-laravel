@@ -79,10 +79,10 @@ final class CarController extends Controller {
 			}
 
 			DB::commit();
-			return Redirect::back()->with("success", "Saved");
+			return Redirect::back()->with("success", t("Saved"));
 		} else {
 			DB::commit();
-			return Redirect::to("/c/" . $car->id)->with("success", "Saved");
+			return Redirect::to("/c/" . $car->id)->with("success", t("Saved"));
 		}
 	}
 }

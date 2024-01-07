@@ -51,8 +51,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 			$from = $from->where("to_user_id", $otherGuy->id);
 		}
 
-		return round($to->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount -
-			$from->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount, 2);
+		return round(
+			$to->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount -
+				$from->selectRaw('SUM("amount") as "amount"')->firstOrFail()->amount,
+			2,
+		);
 	}
 
 	private array $owingMemo = [];

@@ -20,15 +20,15 @@ final class AuthenticationController extends Controller {
 		]);
 		$user = User::where("username", $request->username)->first();
 		if ($user == null or !password_verify($request->password, $user->password)) {
-			return back()->withErrors(["username" => __("auth.failed")]);
+			return back()->withErrors(["username" => __("auth.fail")]);
 		}
 		Auth::login($user, $request->has("remember_me"));
-		return Redirect::intended()->with("success", t("welcome"));
+		return Redirect::intended()->with("success", t("Welcome"));
 	}
 
 	public function logout() {
 		Auth::logout();
 		Session::regenerate();
-		return Redirect::to("/login")->with("success", t("goodbye"));
+		return Redirect::to("/login")->with("success", t("Goodbye"));
 	}
 }

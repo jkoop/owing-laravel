@@ -1,26 +1,26 @@
 @extends('layouts.default')
-@section('title', 'Users')
+@section('title', t('Users'))
 @section('content')
 
 	<nav>
-		<a href="/u/new">New</a>
+		<a href="/u/new">@t('New')</a>
 		@if (request()->has('deleted'))
-			<a href="/u">Hide deleted</a>
+			<a href="/u">@t('Hide deleted')</a>
 		@else
-			<a href="/u?deleted">Show deleted</a>
+			<a href="/u?deleted">@t('Show deleted')</a>
 		@endif
 	</nav>
 
 	<table>
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Username</th>
-				<th>Balance</th>
-				<th>Last Transaction At</th>
-				<th>Is Admin?</th>
+				<th>@t('Name')</th>
+				<th>@t('Username')</th>
+				<th>@t('Balance')</th>
+				<th>@t('Last Transaction At')</th>
+				<th>@t('Is Admin?')</th>
 				@if (request()->has('deleted'))
-					<th>Deleted</th>
+					<th>@t('Deleted')</th>
 				@endif
 			</tr>
 		</thead>
@@ -29,7 +29,7 @@
 				<tr>
 					<td><x-user :user="$user" /></td>
 					<td>{{ $user->username }}</td>
-					<td>${{ number_format($user->balance,2) }}</td>
+					<td>${{ number_format($user->balance, 2) }}</td>
 					<td><x-datetime :datetime="$user
 					    ->transactions()
 					    ->orderByDesc('occurred_at')
@@ -42,7 +42,7 @@
 			@endforeach
 			@if ($users->count() < 1)
 				<tr>
-					<td colspan="3"><i>no users</i></td>
+					<td colspan="3"><i>@t('no users')</i></td>
 				</tr>
 			@endif
 		</tbody>

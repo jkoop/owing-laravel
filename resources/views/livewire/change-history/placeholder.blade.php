@@ -3,14 +3,14 @@
 		@vite('resources/css/change-history.css')
 	@endonce
 
-	<h2>Change history <x-spinner /></h2>
+	<h2>@t('Change history') <x-spinner /></h2>
 
 	<table class="change-history">
 		<thead>
 			<tr>
-				<th>Date</th>
-				<th>Author</th>
-				<th>Description</th>
+				<th>@t('Date')</th>
+				<th>@t('Author')</th>
+				<th>@t('Description')</th>
 			</tr>
 		</thead>
 		<tbody>

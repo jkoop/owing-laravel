@@ -33,12 +33,18 @@ class Transaction extends Model {
 	}
 
 	public function otherUser(): BelongsTo {
-		if ($this->from_user_id == Auth::id()) return $this->userTo();
-		else return $this->userFrom();
+		if ($this->from_user_id == Auth::id()) {
+			return $this->userTo();
+		} else {
+			return $this->userFrom();
+		}
 	}
 
 	public function getCreditAttribute(): float {
-		if ($this->from_user_id == Auth::id()) return $this->amount * -1;
-		else return $this->amount;
+		if ($this->from_user_id == Auth::id()) {
+			return $this->amount * -1;
+		} else {
+			return $this->amount;
+		}
 	}
 }

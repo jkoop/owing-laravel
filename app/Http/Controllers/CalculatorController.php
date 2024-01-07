@@ -32,12 +32,12 @@ final class CalculatorController extends Controller {
 		$answer = '$' . $answer;
 
 		if (strtotime($dateString) < 1000000000) {
-			$answer .= " (assuming today)";
+			$answer = t(":price (assuming today)", ["price" => $answer]);
 		} elseif (
 			$date->timestamp > now()->timestamp &&
 			$date->format("Y-m-d") != now("America/Winnipeg")->format("Y-m-d")
 		) {
-			$answer .= " (transactions in the future can change without warning)";
+			$answer = t(":price (transactions in the future can change without warning)", ["price" => $answer]);
 		}
 
 		return response(

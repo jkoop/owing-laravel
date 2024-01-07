@@ -62,12 +62,12 @@ final class UserController extends Controller {
 			if ($request->has("restore")) {
 				$user->restore();
 			}
-			return Redirect::back()->with("success", "Saved");
+			return Redirect::back()->with("success", t("Saved"));
 		} else {
 			$data["must_change_password"] = true;
 			$user->fill($data);
 			$user->save();
-			return Redirect::to("/u/" . $user->id)->with("success", "Saved");
+			return Redirect::to("/u/" . $user->id)->with("success", t("Saved"));
 		}
 	}
 }

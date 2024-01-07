@@ -18,19 +18,14 @@
 	<table>
 		<thead>
 			<tr x-data="{{ json_encode([
-				'user_id' => request()->user_id,
-				'disabled' => false,
+			    'user_id' => request()->user_id,
+			    'disabled' => false,
 			]) }}">
 				<th>@t('Occurred at')</th>
 				<th>
 					@t('User')
 					<button x-show="user_id===null" @click="user_id=-1">=</button>
-					<x-select
-						name="user_id"
-						x-show="user_id!==null"
-						onchange="location.href=`?user_id=${this.value}`"
-						x-cloak
-					>
+					<x-select name="user_id" x-show="user_id!==null" onchange="location.href=`?user_id=${this.value}`" x-cloak>
 						<option></option>
 						@foreach ($users as $user)
 							<x-select.option value="{{ $user->id }}">{{ $user->name }}</x-select.option>

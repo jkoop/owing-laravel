@@ -37,7 +37,7 @@ final class ProfileController extends Controller {
 
 		Auth::user()->update($data);
 
-		return Redirect::back()->with("success", "Saved");
+		return Redirect::back()->with("success", t("Saved"));
 	}
 
 	public function changePassword() {
@@ -57,6 +57,6 @@ final class ProfileController extends Controller {
 			"must_change_password" => false,
 		]);
 
-		return Redirect::intended()->with("success", "Saved");
+		return Redirect::intended()->with("success", t("Saved"));
 	}
 }
