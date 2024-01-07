@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repositories\FuelPriceRepository;
 use App\Traits\Changeable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,5 +47,21 @@ class Transaction extends Model {
 		} else {
 			return $this->amount;
 		}
+	}
+
+	public function recalculate(): void {
+		if ($this->kind != "drivetrak") {
+			return;
+		}
+		$oldAuthorId = Change::$authorId;
+		Change::$authorId = null; // system
+
+		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($this->car->fuelType->fuel_type, $this->occurred_at);
+
+		$this->update([
+			"amount" => round($this->car->efficiency->efficiency * $fuelPrice->price * $this->distance, 2),
+		]);
+
+		Change::$authorId = $oldAuthorId;
 	}
 }

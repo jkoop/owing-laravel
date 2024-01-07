@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\CarEfficiency;
 use App\Models\CarFuelType;
+use App\Models\Transaction;
 use App\Rules\UniqueCi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +61,14 @@ final class CarController extends Controller {
 				"efficiency" => round($request->efficiency, 4),
 				"author_id" => Auth::id(),
 			]);
+
+			if ($car->id) {
+				Transaction::with("car")
+					->where("occurred_at", ">", now()->timestamp)
+					->where("car_id", $car->id)
+					->get()
+					->map(fn($transaction) => $transaction->recalculate());
+			}
 		}
 
 		if ($request->fuel_type != $car->fuelType->fuel_type) {
@@ -68,6 +77,14 @@ final class CarController extends Controller {
 				"fuel_type" => $request->fuel_type,
 				"author_id" => Auth::id(),
 			]);
+
+			if ($car->id) {
+				Transaction::with("car")
+					->where("occurred_at", ">", now()->timestamp)
+					->where("car_id", $car->id)
+					->get()
+					->map(fn($transaction) => $transaction->recalculate());
+			}
 		}
 
 		if ($car->id) {

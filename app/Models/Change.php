@@ -27,8 +27,18 @@ class Change extends Model {
 		return $this->transaction ?? ($this->user ?? throw new ImpossibleStateException());
 	}
 
+	/**
+	 * @var int|null $id int for user, null for system, 0 for logged in user
+	 */
+	public static int|null $authorId = 0;
+
 	public static function record(Model $target, string $description): void {
-		$details = ["author_id" => Auth::id(), "description" => $description];
+		$authorId = self::$authorId;
+		if ($authorId === 0) {
+			$authorId = Auth::id();
+		}
+
+		$details = ["author_id" => $authorId, "description" => $description];
 
 		switch (get_class($target)) {
 			case Car::class:

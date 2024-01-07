@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\CarFuelType;
 use App\Models\FuelPrice;
+use App\Models\Transaction;
 use Carbon\Carbon;
 
 class FuelPriceRepository {
@@ -53,18 +54,11 @@ class FuelPriceRepository {
 					"fuel_type" => $type,
 				]);
 
-				// @todo
-				// DB::statement(<<<SQL
-				//     UPDATE `trips`
-				//     INNER JOIN `cars` ON `cars`.`id` = `trips`.`car_id`
-				//     SET `fuel_price` = :fuelPrice
-				//     WHERE `fuel_type` = :fuelType
-				//         AND `date` > :now
-				// SQL, [
-				// 	'fuelPrice' => $price,
-				// 	'fuelType' => $type,
-				// 	'now' => now()->format('Y-m-d'),
-				// ]);
+				Transaction::with("car")
+					->where("kind", "drivetrak")
+					->where("occurred_at", ">", now()->timestamp)
+					->get()
+					->map(fn($transaction) => $transaction->recalculate());
 			}
 		}
 

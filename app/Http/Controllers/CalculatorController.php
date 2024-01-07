@@ -26,9 +26,12 @@ final class CalculatorController extends Controller {
 		}
 
 		$car = Car::findOrPanic($request->car_id);
-		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $date);
+		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuelType->fuel_type, $date);
 
-		$answer = number_format($car->efficiency * $fuelPrice->price * $request->distance * $request->ratio, 2);
+		$answer = number_format(
+			$car->efficiency->efficiency * $fuelPrice->price * $request->distance * $request->ratio,
+			2,
+		);
 		$answer = '$' . $answer;
 
 		if (strtotime($dateString) < 1000000000) {

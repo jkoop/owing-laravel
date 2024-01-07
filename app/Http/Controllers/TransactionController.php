@@ -80,8 +80,8 @@ final class TransactionController extends Controller {
 			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
 		} elseif ($request->kind == "drivetrak") {
 			$car = Car::findOrPanic($request->car_id);
-			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuel_type, $request->occurred_at);
-			$amount = round($car->efficiency * $fuelPrice->price * $request->distance, 2);
+			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuelType->fuel_type, $request->occurred_at);
+			$amount = round($car->efficiency->efficiency * $fuelPrice->price * $request->distance, 2);
 
 			if ($car->owner_id == Auth::id()) {
 				$request->validate(["other_user_id" => "required"]);

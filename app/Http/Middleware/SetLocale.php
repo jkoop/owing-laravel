@@ -14,11 +14,11 @@ final class SetLocale {
 	 */
 	public function handle(Request $request, Closure $next): Response {
 		$locale = $request->user()?->locale;
-		$locale ??= $_COOKIE['locale'] ?? null;
-		$locale ??= 'en_CA';
+		$locale ??= $_COOKIE["locale"] ?? null;
+		$locale ??= "en_CA";
 		app()->setLocale($locale);
 
-		setcookie('locale', $locale, time() + 60 * 60 * 24 * 365, '/');
+		setcookie("locale", $locale, time() + 60 * 60 * 24 * 365, "/");
 
 		return $next($request);
 	}
