@@ -17,7 +17,7 @@
 				<th>@t('Name')</th>
 				<th>@t('Username')</th>
 				<th>@t('Balance')</th>
-				<th>@t('Last Transaction At')</th>
+				<th>@t('Last Transaction')</th>
 				<th>@t('Is Admin?')</th>
 				@if (request()->has('deleted'))
 					<th>@t('Deleted')</th>
@@ -34,7 +34,7 @@
 					    ->transactions()
 					    ->orderByDesc('occurred_at')
 					    ->first()?->occurred_at" relative /></td>
-					<td>{{ $user->is_admin ? 'true' : 'false' }}</td>
+					<td>@t($user->is_admin ? 'true' : 'false')</td>
 					@if (request()->has('deleted'))
 						<td><x-datetime :datetime="$user->deleted_at" relative /></td>
 					@endif
