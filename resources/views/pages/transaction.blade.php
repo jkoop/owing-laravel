@@ -41,12 +41,12 @@
 				<label>
 					<x-input name="from_to" type="radio" value="from" />
 					<span x-show="kind == 'owing'">@t('I owe him')</span>
-					<span x-show="kind != 'owing'">@t('He paid me')</span>
+					<span x-show="kind != 'owing'">@t('I paid him')</span>
 				</label>
 				<label>
 					<x-input name="from_to" type="radio" value="to" />
 					<span x-show="kind == 'owing'">@t('He owes me')</span>
-					<span x-show="kind != 'owing'">@t('I paid him')</span>
+					<span x-show="kind != 'owing'">@t('He paid me')</span>
 				</label>
 			</fieldset>
 
@@ -102,8 +102,8 @@
 			<fieldset x-cloak x-show="kind && kind != 'drivetrak' && from_to && other_user_id" x-transition>
 				<legend x-show="kind == 'owing' && from_to == 'from'">@t('How much do you owe him?')</legend>
 				<legend x-show="kind == 'owing' && from_to == 'to'">@t('How much does he owe you?')</legend>
-				<legend x-show="kind != 'owing' && from_to == 'to'">@t('How much did you pay him?')</legend>
-				<legend x-show="kind != 'owing' && from_to == 'from'">@t('How much did he pay you?')</legend>
+				<legend x-show="kind != 'owing' && from_to == 'from'">@t('How much did you pay him?')</legend>
+				<legend x-show="kind != 'owing' && from_to == 'to'">@t('How much did he pay you?')</legend>
 
 				<span>$<x-input name="amount" type="number" style="max-width:70px" step="0.01" min="0" /></span>
 			</fieldset>
