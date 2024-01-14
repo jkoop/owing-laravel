@@ -49,7 +49,7 @@
 		@yield('content')
 	</main>
 	<footer>
-		<a target="_blank" href="https://github.com/jkoop/owing-laravel">GitHub</a>
+		<a href="https://github.com/jkoop/owing-laravel" target="_blank">GitHub</a>
 		<span>@t('Page took {:time}s', ['time' => number_format(microtime(true) - LARAVEL_START, 2)])</span>
 		<span>
 			@auth

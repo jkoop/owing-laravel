@@ -20,16 +20,21 @@ final class TransactionPolicy {
 		 *   - the owner of the car must be the to_user
 		 */
 
-		if ($transaction->id == null) return true;
+		if ($transaction->id == null) {
+			return true;
+		}
 
-		if (
-			$user->id != $transaction->from_user_id
-			and $user->id != $transaction->to_user_id
-		) return false;
+		if ($user->id != $transaction->from_user_id and $user->id != $transaction->to_user_id) {
+			return false;
+		}
 
 		if ($transaction->car_id != null) {
-			if ($transaction->car?->deleted_at != null) return false;
-			if ($transaction->car->owner_id != $transaction->to_user_id) return false;
+			if ($transaction->car?->deleted_at != null) {
+				return false;
+			}
+			if ($transaction->car->owner_id != $transaction->to_user_id) {
+				return false;
+			}
 		}
 
 		return true;

@@ -27,7 +27,13 @@ final class TransactionController extends Controller {
 			$transaction = new Transaction();
 		}
 
-		return view("pages.transaction", compact("transaction"));
+		$users = User::withTrashed()
+			->whereNot("id", Auth::id())
+			->orderBy("name")
+			->get()
+			->filter(fn ($a) => $a->deleted_at == null or $a->getOwing(Auth::user()));
+
+		return view("pages.transaction", compact("transaction", "users"));
 	}
 
 	public function create(Request $request) {
@@ -35,7 +41,13 @@ final class TransactionController extends Controller {
 	}
 
 	public function view(Transaction $transaction) {
-		return view("pages.transaction", compact("transaction"));
+		$users = User::withTrashed()
+			->whereNot("id", Auth::id())
+			->orderBy("name")
+			->get()
+			->filter(fn ($a) => $a->deleted_at == null or $a->getOwing(Auth::user()));
+
+		return view("pages.transaction", compact("transaction", "users"));
 	}
 
 	public function update(Transaction $transaction, Request $request, string $returnTo = null) {
@@ -54,31 +66,34 @@ final class TransactionController extends Controller {
 		]);
 
 		$car = null;
-		if ($request->car_id != null) $car = Car::find($request->car_id) ?? throw new ImpossibleStateException();
+		if ($request->car_id != null) {
+			$car = Car::find($request->car_id) ?? throw new ImpossibleStateException();
+		}
 
 		if ($car != null) {
 			$request->validate([
-				'kind' => 'required|in:drivetrak',
-				'distance' => 'required|numeric|min:0.01',
-				'ratio' => 'numeric|min:0.01|max:1.0',
+				"kind" => "required|in:drivetrak",
+				"distance" => "required|numeric|min:0.01",
+				"ratio" => "numeric|min:0.01|max:1.0",
 			]);
 
-			if ($car->owner_id == Auth::id())
+			if ($car->owner_id == Auth::id()) {
 				$request->validate([
-					'other_user_id' => 'required',
+					"other_user_id" => "required",
 				]);
+			}
 		} else {
 			$request->validate([
-				'amount' => 'required|numeric|min:0.01',
+				"amount" => "required|numeric|min:0.01",
 			]);
 		}
 
 		$fromTo = $request->from_to;
 		if ($car != null) {
 			if ($car->owner_id == Auth::id()) {
-				$fromTo = 'from';
+				$fromTo = "from";
 			} else {
-				$fromTo = 'to';
+				$fromTo = "to";
 			}
 		}
 
@@ -97,8 +112,8 @@ final class TransactionController extends Controller {
 		 */
 
 		if ($car == null) {
-			$fromUser = $fromTo != 'to' ? Auth::user() : $otherUser;
-			$toUser = $fromTo == 'to' ? Auth::user() : $otherUser;
+			$fromUser = $fromTo != "to" ? Auth::user() : $otherUser;
+			$toUser = $fromTo == "to" ? Auth::user() : $otherUser;
 		} else {
 			if ($car->owner_id == Auth::id()) {
 				$fromUser = Auth::user();
@@ -113,7 +128,10 @@ final class TransactionController extends Controller {
 		$occurredAt = Carbon::parse(strtotime($request->occurred_at . " 12:00 America/Winnipeg"));
 		$distance = $car == null ? null : round($request->distance, 2);
 		$ratio = $car == null ? null : (float) $request->ratio;
-		$amount = $car == null ? round($request->amount, 2) : CalculatorController::getAmountForDriveTrak($car, $distance, $ratio, $occurredAt);
+		$amount =
+			$car == null
+			? round($request->amount, 2)
+			: CalculatorController::getAmountForDriveTrak($car, $distance, $ratio, $occurredAt);
 		$memo = trim($request->memo ?? "");
 
 		$transaction->fill([

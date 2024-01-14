@@ -68,7 +68,7 @@
 
 				<x-select name="other_user_id">
 					<option></option>
-					@foreach (App\Models\User::whereNot('id', Auth::id())->orderBy('name')->get() as $user)
+					@foreach ($users as $user)
 						<x-select.option :value="$user->id">{{ $user->name }}</x-select.option>
 					@endforeach
 				</x-select>

@@ -50,12 +50,6 @@ final class CalculatorController extends Controller {
 		$distance = round($distance, 2);
 		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuelType->fuel_type, $date);
 
-		return round(
-			$car->efficiency->efficiency
-				* $fuelPrice->price
-				* $distance
-				* $ratio,
-			2,
-		);
+		return round($car->efficiency->efficiency * $fuelPrice->price * $distance * $ratio, 2);
 	}
 }
