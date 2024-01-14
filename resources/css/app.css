@@ -86,11 +86,11 @@ footer {
 	justify-content: space-between;
 	padding: 8px;
 	background-color: black;
-	color: white;
+	color: #aaa;
 }
 
 footer * {
-	color: white;
+	color: #aaa;
 	text-decoration: none;
 }
 
