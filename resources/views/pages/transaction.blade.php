@@ -36,16 +36,16 @@
 				<label><x-input name="kind" type="radio" value="drivetrak" /> @t('Someone drove a car')</label>
 			</fieldset>
 
-			<fieldset x-cloak x-show="kind && kind != 'drivetrak'" x-transition :class="{ 'flex-col-reverse': kind != 'owing' }">
+			<fieldset x-cloak x-show="kind && kind != 'drivetrak'" x-transition :class="{ 'flex-col-reverse': kind == 'owing' }">
 				<legend>@t('Which way is money going?')</legend>
 				<label>
 					<x-input name="from_to" type="radio" value="from" />
-					<span x-show="kind == 'owing'">@t('I owe him')</span>
+					<span x-show="kind == 'owing'">@t('He owes me')</span>
 					<span x-show="kind != 'owing'">@t('I paid him')</span>
 				</label>
 				<label>
 					<x-input name="from_to" type="radio" value="to" />
-					<span x-show="kind == 'owing'">@t('He owes me')</span>
+					<span x-show="kind == 'owing'">@t('I owe him')</span>
 					<span x-show="kind != 'owing'">@t('He paid me')</span>
 				</label>
 			</fieldset>

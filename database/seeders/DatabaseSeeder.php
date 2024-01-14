@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder {
 
 		$car = Car::create([
 			"owner_id" => 1,
-			"name" => "A Car!!",
+			"name" => "Admin's Car",
 		]);
 		CarEfficiency::create(["car_id" => $car->id, "efficiency" => 1]);
 		CarFuelType::create(["car_id" => $car->id, "fuel_type" => "gasoline"]);

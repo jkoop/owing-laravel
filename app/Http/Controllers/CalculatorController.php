@@ -12,7 +12,7 @@ final class CalculatorController extends Controller {
 		$request->validate([
 			"car_id" => "required|int|exists:cars,id",
 			"distance" => "required|numeric|min:0.01",
-			"ratio" => "required|numeric|min:0.01",
+			"ratio" => "required|numeric|min:0.01|max:1",
 			"date" => "nullable",
 		]);
 
@@ -26,13 +26,8 @@ final class CalculatorController extends Controller {
 		}
 
 		$car = Car::findOrPanic($request->car_id);
-		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuelType->fuel_type, $date);
-
-		$answer = number_format(
-			$car->efficiency->efficiency * $fuelPrice->price * $request->distance * $request->ratio,
-			2,
-		);
-		$answer = '$' . $answer;
+		$answer = self::getAmountForDriveTrak($car, $request->distance, $request->ratio, $date);
+		$answer = '$' . number_format($answer, 2);
 
 		if (strtotime($dateString) < 1000000000) {
 			$answer = t(":price (assuming today)", ["price" => $answer]);
@@ -48,6 +43,19 @@ final class CalculatorController extends Controller {
 			headers: [
 				"Content-Type" => "text/plain",
 			],
+		);
+	}
+
+	public static function getAmountForDriveTrak(Car $car, float $distance, float $ratio, Carbon $date): float {
+		$distance = round($distance, 2);
+		$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuelType->fuel_type, $date);
+
+		return round(
+			$car->efficiency->efficiency
+				* $fuelPrice->price
+				* $distance
+				* $ratio,
+			2,
 		);
 	}
 }

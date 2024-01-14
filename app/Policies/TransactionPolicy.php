@@ -11,8 +11,27 @@ final class TransactionPolicy {
 	}
 
 	public function update(User $user, Transaction $transaction) {
-		return $transaction->id == null; // or // for new transactions
-		// $transaction->from_user_id == $user->id or
-		// $transaction->to_user_id == $user->id;
+		/**
+		 * - it must be a new transaction OR all of the following:
+		 *
+		 * - we must be involved in the transaction (from_ or to_user)
+		 * - if the transaction involves a car,
+		 *   - the car must not be deleted
+		 *   - the owner of the car must be the to_user
+		 */
+
+		if ($transaction->id == null) return true;
+
+		if (
+			$user->id != $transaction->from_user_id
+			and $user->id != $transaction->to_user_id
+		) return false;
+
+		if ($transaction->car_id != null) {
+			if ($transaction->car?->deleted_at != null) return false;
+			if ($transaction->car->owner_id != $transaction->to_user_id) return false;
+		}
+
+		return true;
 	}
 }

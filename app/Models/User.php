@@ -60,16 +60,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
 	private array $owingMemo = [];
 
-	/**
-	 * I owe `$this->name` `Auth::user()->getOwing($this)`.
-	 */
 	public function getOwing(User $user): float {
 		if (isset($this->owingMemo[$user->id])) {
 			return $this->owingMemo[$user->id];
 		}
 
 		return $this->owingMemo[$user->id] = (function () use ($user) {
-			$owing = -$this->getBalanceAttribute($user);
+			$owing = $this->getBalanceAttribute($user);
 			if ($owing == 0) {
 				return 0;
 			} // avoids returning negative zero

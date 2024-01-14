@@ -4,7 +4,7 @@
 
 	<livewire:owing-totals />
 
-	<h2>@t('Ledger')</h2>
+	<h2>@t('Ledger') <a href="https://github.com/jkoop/owing-laravel/wiki/Ledger" target="_blank" class="decoration-dotted text-base">(?)</a></h2>
 
 	<nav>
 		<a href="/t/new">@t('New')</a>

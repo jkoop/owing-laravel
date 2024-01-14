@@ -6,13 +6,12 @@ use App\Exceptions\ImpossibleStateException;
 use App\Models\Car;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Repositories\FuelPriceRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
 
 final class TransactionController extends Controller {
 	public function new(Request $request) {
@@ -46,78 +45,91 @@ final class TransactionController extends Controller {
 			"kind" => "required|in:owing,payment,drivetrak",
 			"from_to" => "nullable|required_if:kind,owing,payment|in:from,to",
 			"car_id" => "nullable|required_if:kind,drivetrak|integer|exists:cars,id",
-			"other_user_id" => "nullable|required_if:kind,owing,payment|integer|exists:users,id", // we'll do more validation in a moment
-			"distance" => "nullable|required_if:kind,drivetrak|numeric", // we'll do more validation in a moment
-			"amount" => "nullable|required_if:kind,owing,payment|numeric", // we'll do more validation in a moment
+			"other_user_id" => "nullable|required_if:kind,owing,payment|integer|exists:users,id|not_in:" . Auth::id(),
+			"distance" => "nullable|required_if:kind,drivetrak|numeric",
+			"ratio" => "nullable|required_if:kind,drivetrak|numeric",
+			"amount" => "nullable|required_if:kind,owing,payment|numeric",
 			"occurred_at" => "required|date",
 			"memo" => "present",
 		]);
 
-		if ($request->kind != "drivetrak") {
-			$otherUser = User::findOrPanic($request->other_user_id);
+		$car = null;
+		if ($request->car_id != null) $car = Car::find($request->car_id) ?? throw new ImpossibleStateException();
 
+		if ($car != null) {
 			$request->validate([
-				"amount" => "required|numeric|min:0.01",
+				'kind' => 'required|in:drivetrak',
+				'distance' => 'required|numeric|min:0.01',
+				'ratio' => 'numeric|min:0.01|max:1.0',
 			]);
 
-			$fromUser = $request->from_to == "to" ? Auth::user() : $otherUser;
-			$toUser = $request->from_to != "to" ? Auth::user() : $otherUser;
-
-			$transaction->fill([
-				"kind" => $request->kind,
-				"from_user_id" => $fromUser->id,
-				"to_user_id" => $toUser->id,
-				"amount" => round($request->amount, 2),
-				"is_confirmed" => $fromUser->id == Auth::id(),
-				"car_id" => null,
-				"distance" => null,
-				"memo" => trim($request->memo ?? ""),
-				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
-			]);
-			$transaction->save();
-			DB::commit();
-
-			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
-		} elseif ($request->kind == "drivetrak") {
-			$car = Car::findOrPanic($request->car_id);
-			$fuelPrice = FuelPriceRepository::getFuelPriceAtTime($car->fuelType->fuel_type, $request->occurred_at);
-			$amount = round($car->efficiency->efficiency * $fuelPrice->price * $request->distance, 2);
-
-			if ($car->owner_id == Auth::id()) {
-				$request->validate(["other_user_id" => "required"]);
-				$otherUser = User::findOrPanic($request->other_user_id);
-			} else {
-				$otherUser = $car->owner;
-			}
-
-			$request->validate([
-				"distance" => "nullable|required_if:kind,drivetrak|numeric|min:0.01",
-			]);
-
-			Validator::validate(compact("amount"), ["amount" => "required|numeric|min:0.01"]);
-
-			$fromUser = $car->owner_id == Auth::id() ? Auth::user() : $otherUser;
-			$toUser = $car->owner_id != Auth::id() ? Auth::user() : $otherUser;
-
-			$transaction->fill([
-				"kind" => "drivetrak",
-				"from_user_id" => $fromUser->id,
-				"to_user_id" => $toUser->id,
-				"amount" => (float) $amount,
-				"is_confirmed" => $fromUser->id == Auth::id(),
-				"car_id" => $car->id,
-				"distance" => round($request->distance, 2),
-				"memo" => trim($request->memo ?? ""),
-				"occurred_at" => strtotime($request->occurred_at . " 12:00 America/Winnipeg"),
-			]);
-			$transaction->save();
-			DB::commit();
-
-			return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
+			if ($car->owner_id == Auth::id())
+				$request->validate([
+					'other_user_id' => 'required',
+				]);
 		} else {
-			throw new ImpossibleStateException();
+			$request->validate([
+				'amount' => 'required|numeric|min:0.01',
+			]);
 		}
 
-		throw new ImpossibleStateException();
+		$fromTo = $request->from_to;
+		if ($car != null) {
+			if ($car->owner_id == Auth::id()) {
+				$fromTo = 'from';
+			} else {
+				$fromTo = 'to';
+			}
+		}
+
+		if ($request->other_user_id != null) {
+			$otherUser = User::withTrashed()->find($request->other_user_id) ?? throw new ImpossibleStateException();
+		} else {
+			$otherUser = null;
+		}
+
+		/**
+		 * | Description of transfer | From  | To    |
+		 * | ----------------------- | ----- | ----- |
+		 * | Alice pays Bob          | Alice | Bob   |
+		 * | Alice owes Bob          | Bob   | Alice |
+		 * | Alice drives Bob's car  | Bob   | Alice |
+		 */
+
+		if ($car == null) {
+			$fromUser = $fromTo != 'to' ? Auth::user() : $otherUser;
+			$toUser = $fromTo == 'to' ? Auth::user() : $otherUser;
+		} else {
+			if ($car->owner_id == Auth::id()) {
+				$fromUser = Auth::user();
+				$toUser = $otherUser;
+			} else {
+				$fromUser = $car->owner;
+				$toUser = Auth::user();
+			}
+		}
+
+		$kind = $request->kind;
+		$occurredAt = Carbon::parse(strtotime($request->occurred_at . " 12:00 America/Winnipeg"));
+		$distance = $car == null ? null : round($request->distance, 2);
+		$ratio = $car == null ? null : (float) $request->ratio;
+		$amount = $car == null ? round($request->amount, 2) : CalculatorController::getAmountForDriveTrak($car, $distance, $ratio, $occurredAt);
+		$memo = trim($request->memo ?? "");
+
+		$transaction->fill([
+			"kind" => $kind,
+			"from_user_id" => $fromUser->id,
+			"to_user_id" => $toUser->id,
+			"amount" => $amount,
+			"is_confirmed" => $fromUser->id == Auth::id(),
+			"car_id" => $car?->id,
+			"distance" => $distance,
+			"memo" => $memo,
+			"occurred_at" => $occurredAt,
+		]);
+		$transaction->save();
+		DB::commit();
+
+		return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
 	}
 }
