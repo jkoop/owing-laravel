@@ -2,7 +2,7 @@
 @section('title', t('Cars'))
 @section('content')
 
-	<nav class="p-2 bg-blue-100 mb-4 flex flex-row flex-wrap gap-4">
+	<nav class="mb-4 flex flex-row flex-wrap gap-4 bg-blue-100 p-2">
 		@if (request()->has('deleted'))
 			<a href="/c">@t('Hide deleted')</a>
 		@else

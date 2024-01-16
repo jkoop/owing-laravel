@@ -35,8 +35,12 @@ Route::middleware("auth")->group(function () {
 	Route::get("t", [TransactionController::class, "index"]);
 	Route::get("t/new", [TransactionController::class, "new"]);
 	Route::post("t/new", [TransactionController::class, "create"]);
-	Route::get("t/{transaction}", [TransactionController::class, "view"])->can("view", "transaction")->withTrashed();
-	Route::post("t/{transaction}", [TransactionController::class, "update"])->can("update", "transaction")->withTrashed();
+	Route::get("t/{transaction}", [TransactionController::class, "view"])
+		->can("view", "transaction")
+		->withTrashed();
+	Route::post("t/{transaction}", [TransactionController::class, "update"])
+		->can("update", "transaction")
+		->withTrashed();
 
 	Route::get("profile", [ProfileController::class, "view"]);
 	Route::post("profile", [ProfileController::class, "update"]);

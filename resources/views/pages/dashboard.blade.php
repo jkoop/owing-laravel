@@ -8,7 +8,7 @@
 	<h2>@t('Ledger') <a class="text-base decoration-dotted" href="https://github.com/jkoop/owing-laravel/wiki/Ledger"
 			target="_blank">(?)</a></h2>
 
-	<nav class="p-2 bg-blue-100 mb-4 flex flex-row flex-wrap gap-4">
+	<nav class="mb-4 flex flex-row flex-wrap gap-4 bg-blue-100 p-2">
 		<label>
 			<input name="deleted" type="checkbox" onchange="resetTable()" />
 			@t('Show deleted')

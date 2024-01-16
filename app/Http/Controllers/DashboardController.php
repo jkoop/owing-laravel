@@ -19,13 +19,14 @@ final class DashboardController extends Controller {
 				FROM "transactions"
 				WHERE "from_user_id" = :0
 					OR "to_user_id" = :1
-			SQL,
+			SQL
+			,
 			[Auth::id(), Auth::id()],
 		);
 		$users = collect($users)
-			->map(fn ($a) => [$a->from_user_id, $a->to_user_id])
+			->map(fn($a) => [$a->from_user_id, $a->to_user_id])
 			->flatten()
-			->filter(fn ($a) => $a != Auth::id())
+			->filter(fn($a) => $a != Auth::id())
 			->unique();
 		$users = User::withTrashed()
 			->whereIn("id", $users->toArray())

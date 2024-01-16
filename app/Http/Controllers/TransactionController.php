@@ -59,7 +59,7 @@ final class TransactionController extends Controller {
 			->whereNot("id", Auth::id())
 			->orderBy("name")
 			->get()
-			->filter(fn ($a) => $a->deleted_at == null or $a->getOwing(Auth::user()));
+			->filter(fn($a) => $a->deleted_at == null or $a->getOwing(Auth::user()));
 
 		return view("pages.transaction", compact("transaction", "users"));
 	}
@@ -73,7 +73,7 @@ final class TransactionController extends Controller {
 			->whereNot("id", Auth::id())
 			->orderBy("name")
 			->get()
-			->filter(fn ($a) => $a->deleted_at == null or $a->getOwing(Auth::user()));
+			->filter(fn($a) => $a->deleted_at == null or $a->getOwing(Auth::user()));
 
 		return view("pages.transaction", compact("transaction", "users"));
 	}
@@ -158,8 +158,8 @@ final class TransactionController extends Controller {
 		$ratio = $car == null ? null : (float) $request->ratio;
 		$amount =
 			$car == null
-			? round($request->amount, 2)
-			: CalculatorController::getAmountForDriveTrak($car, $distance, $ratio, $occurredAt);
+				? round($request->amount, 2)
+				: CalculatorController::getAmountForDriveTrak($car, $distance, $ratio, $occurredAt);
 		$memo = trim($request->memo ?? "");
 
 		$transaction->fill([
