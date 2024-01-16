@@ -24,8 +24,8 @@ final class TransactionController extends Controller {
 		$transactions = Auth::user()
 			->transactions()
 			->with(["userFrom", "userTo"])
-			->orderByDesc("occurred_at")
 			->orderByDesc($request->order_by)
+			->orderByDesc("occurred_at")
 			->offset($request->offset)
 			->limit(50);
 
@@ -170,6 +170,7 @@ final class TransactionController extends Controller {
 			"is_confirmed" => $fromUser->id == Auth::id(),
 			"car_id" => $car?->id,
 			"distance" => $distance,
+            "ratio" => $ratio,
 			"memo" => $memo,
 			"occurred_at" => $occurredAt,
 		]);

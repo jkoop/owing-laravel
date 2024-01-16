@@ -17,7 +17,7 @@ final class TransactionPolicy {
 		 * - we must be involved in the transaction (from_ or to_user)
 		 * - if the transaction involves a car,
 		 *   - the car must not be deleted
-		 *   - the owner of the car must be the to_user
+		 *   - the owner of the car must be the from_user
 		 */
 
 		if ($transaction->id == null) {
@@ -32,7 +32,7 @@ final class TransactionPolicy {
 			if ($transaction->car?->deleted_at != null) {
 				return false;
 			}
-			if ($transaction->car->owner_id != $transaction->to_user_id) {
+			if ($transaction->car->owner_id != $transaction->from_user_id) {
 				return false;
 			}
 		}
