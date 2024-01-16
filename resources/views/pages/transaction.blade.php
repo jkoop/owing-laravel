@@ -100,8 +100,8 @@
 			</fieldset>
 
 			<fieldset x-cloak x-show="kind && kind != 'drivetrak' && from_to && other_user_id" x-transition>
-				<legend x-show="kind == 'owing' && from_to == 'from'">@t('How much do you owe him?')</legend>
-				<legend x-show="kind == 'owing' && from_to == 'to'">@t('How much does he owe you?')</legend>
+				<legend x-show="kind == 'owing' && from_to == 'to'">@t('How much do you owe him?')</legend>
+				<legend x-show="kind == 'owing' && from_to == 'from'">@t('How much does he owe you?')</legend>
 				<legend x-show="kind != 'owing' && from_to == 'from'">@t('How much did you pay him?')</legend>
 				<legend x-show="kind != 'owing' && from_to == 'to'">@t('How much did he pay you?')</legend>
 
