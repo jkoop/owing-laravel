@@ -2,13 +2,13 @@
 @section('title', t('Users'))
 @section('content')
 
-	<nav>
-		<a href="/u/new">@t('New')</a>
+	<nav class="p-2 bg-blue-100 mb-4 flex flex-row flex-wrap gap-4">
 		@if (request()->has('deleted'))
 			<a href="/u">@t('Hide deleted')</a>
 		@else
 			<a href="/u?deleted">@t('Show deleted')</a>
 		@endif
+		<a class="ml-auto" href="/u/new">@t('New')</a>
 	</nav>
 
 	<table>

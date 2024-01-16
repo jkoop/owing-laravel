@@ -110,8 +110,8 @@ final class ImportController extends Controller {
 							$row[3],
 							$row[6],
 						),
-						"to_user_id" => (int) $fromUserId,
-						"from_user_id" => (int) $row[2],
+						"to_user_id" => (int) $row[2],
+						"from_user_id" => (int) $fromUserId,
 						"occurred_at" => (int) $row[4],
 						"is_confirmed" => $row[5] != "",
 						"created_at" => (int) $row[9],
@@ -126,8 +126,8 @@ final class ImportController extends Controller {
 					Transaction::create([
 						"kind" => "drivetrak",
 						"memo" => "From DriveTrak trip #" . $row[1] . "; " . $row[6],
-						"to_user_id" => $car->owner_id,
-						"from_user_id" => (int) $row[2],
+						"to_user_id" => (int) $row[2],
+						"from_user_id" => $car->owner_id,
 						"occurred_at" => $date,
 						"is_confirmed" => true,
 						"car_id" => $car->id,
@@ -225,7 +225,7 @@ final class ImportController extends Controller {
 			$users = array_keys($users);
 
 			$transaction->update([
-				"to_user_id" => $users[0],
+				"from_user_id" => $users[0],
 			]);
 		}
 
@@ -249,7 +249,7 @@ final class ImportController extends Controller {
 
 			if ($userTo->getOwing($userFrom) < $userTo->getOwing($otherOwner)) {
 				$transaction->update([
-					"to_user_id" => $otherOwner->id,
+					"from_user_id" => $otherOwner->id,
 				]);
 			}
 		}

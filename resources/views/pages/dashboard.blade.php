@@ -2,38 +2,41 @@
 @section('title', t('Dashboard'))
 @section('content')
 
+	@vite('resources/js/dashboard.js')
 	<livewire:owing-totals />
 
 	<h2>@t('Ledger') <a class="text-base decoration-dotted" href="https://github.com/jkoop/owing-laravel/wiki/Ledger"
 			target="_blank">(?)</a></h2>
 
-	<nav>
-		<a href="/t/new">@t('New')</a>
-		@if (request()->has('deleted'))
-			<a href="/">@t('Hide deleted')</a>
-		@else
-			<a href="/?deleted">@t('Show deleted')</a>
-		@endif
+	<nav class="p-2 bg-blue-100 mb-4 flex flex-row flex-wrap gap-4">
+		<label>
+			<input name="deleted" type="checkbox" onchange="resetTable()" />
+			@t('Show deleted')
+		</label>
+		<label>
+			@t('Sort by')
+			<select name="order_by" onchange="resetTable()">
+				<option value="updated_at" selected>@t('Updated at')</option>
+				<option value="occurred_at">@t('Occurred at')</option>
+			</select>
+		</label>
+		<label>
+			@t('Filter by user')
+			<select name="user_id" onchange="resetTable()">
+				<option selected></option>
+				@foreach ($users as $user)
+					<option value="{{ $user->id }}">{{ $user->name }}</option>
+				@endforeach
+			</select>
+		</label>
+		<a class="ml-auto" href="/t/new">@t('New')</a>
 	</nav>
 
 	<table>
 		<thead>
-			<tr x-data="{{ json_encode([
-			    'user_id' => request()->user_id,
-			    'disabled' => false,
-			]) }}">
+			<tr>
 				<th>@t('Occurred at')</th>
-				<th>
-					@t('User')
-					<button x-show="user_id===null" @click="user_id=-1">=</button>
-					<x-select name="user_id" x-show="user_id!==null" onchange="location.href=`?user_id=${this.value}`" x-cloak>
-						<option></option>
-						@foreach ($users as $user)
-							<x-select.option value="{{ $user->id }}">{{ $user->name }}</x-select.option>
-						@endforeach
-					</x-select>
-					<x-spinner x-show="false" />
-				</th>
+				<th>@t('User')</th>
 				<th>@t('Credit')</th>
 				<th>@t('Car')</th>
 				<th>@t('Memo')</th>
@@ -41,37 +44,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach ($transactions as $transaction)
-				<tr>
-					<td><x-datetime :datetime="$transaction->occurred_at" /></td>
-					<td><x-user :user="$transaction->otherUser" /></td>
-					<td>
-						@if ($transaction->deleted_at !== null)
-							<del>${{ number_format($transaction->credit, 2) }}</del>
-						@else
-							${{ number_format($transaction->credit, 2) }}
-						@endif
-					</td>
-					<td><x-car :car="$transaction->car" /></td>
-					<td>
-						@if ($transaction->memo != null)
-							{{ $transaction->memo }}
-						@else
-							<i>@t('no memo')</i>
-						@endif
-					</td>
-					<td>
-						<a class="inline-block" href="/t/{{ $transaction->id }}">
-							@can('update', $transaction)
-								@t('edit')
-							@else
-								@t('view')
-							@endcan
-						</a>
-						<a href="/t/new?clone={{ $transaction->id }}">@t('clone')</a>
-					</td>
-				</tr>
-			@endforeach
+			<tr class="loading">
+				<td colspan=5><x-spinner /></td>
+			</tr>
 		</tbody>
 	</table>
 

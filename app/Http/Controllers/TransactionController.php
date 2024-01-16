@@ -14,6 +14,34 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 
 final class TransactionController extends Controller {
+	public function index(Request $request) {
+		$request->validate([
+			"offset" => "required|int|min:0",
+			"user_id" => "nullable|int|min:1",
+			"order_by" => "required|in:occurred_at,updated_at",
+		]);
+
+		$transactions = Auth::user()
+			->transactions()
+			->with(["userFrom", "userTo"])
+			->orderByDesc("occurred_at")
+			->orderByDesc($request->order_by)
+			->offset($request->offset)
+			->limit(50);
+
+		if ($request->has("deleted")) {
+			$transactions = $transactions->withTrashed();
+		}
+		if ($request->user_id != null) {
+			$transactions = $transactions->where(function ($query) use ($request) {
+				$query->where("from_user_id", $request->user_id)->orWhere("to_user_id", $request->user_id);
+			});
+		}
+		$transactions = $transactions->get();
+
+		return view("blocks.transactions", compact("transactions"));
+	}
+
 	public function new(Request $request) {
 		$request->validate([
 			"clone" => "nullable|int|exists:transactions,id",
@@ -37,7 +65,7 @@ final class TransactionController extends Controller {
 	}
 
 	public function create(Request $request) {
-		return $this->update(new Transaction(), $request, "/");
+		return $this->update(new Transaction(), $request);
 	}
 
 	public function view(Transaction $transaction) {
@@ -50,7 +78,7 @@ final class TransactionController extends Controller {
 		return view("pages.transaction", compact("transaction", "users"));
 	}
 
-	public function update(Transaction $transaction, Request $request, string $returnTo = null) {
+	public function update(Transaction $transaction, Request $request) {
 		DB::beginTransaction(); // prevent races
 
 		$request->validate([
@@ -146,8 +174,17 @@ final class TransactionController extends Controller {
 			"occurred_at" => $occurredAt,
 		]);
 		$transaction->save();
+
+		if ($request->has("delete")) {
+			$transaction->delete();
+		}
+
+		if ($request->has("restore")) {
+			$transaction->restore();
+		}
+
 		DB::commit();
 
-		return Redirect::to($returnTo ?? "/t/$transaction->id")->with("success", t("Saved"));
+		return Redirect::to("/")->with("success", t("Saved"));
 	}
 }

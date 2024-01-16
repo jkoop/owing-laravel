@@ -117,6 +117,11 @@ footer a:hover {
 	border-radius: 50px;
 }
 
+.big-spinner {
+	width: 24px;
+	height: 24px;
+}
+
 .deleted {
 	text-decoration: line-through;
 }

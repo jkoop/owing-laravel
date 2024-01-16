@@ -13,37 +13,25 @@ final class DashboardController extends Controller {
 			"user_id" => "nullable|int|exists:users,id",
 		]);
 
-		$transactions = Auth::user()
-			->transactions()
-			->with(["userFrom", "userTo"])
-			->orderByDesc("occurred_at");
-		if ($request->has("deleted")) {
-			$transactions = $transactions->withTrashed();
-		}
-		if ($request->user_id !== null) {
-			$transactions = $transactions->where(function ($query) use ($request) {
-				$query->where("from_user_id", $request->user_id)->orWhere("to_user_id", $request->user_id);
-			});
-		}
-		$transactions = $transactions->get();
-
 		$users = DB::select(
 			<<<SQL
 				SELECT DISTINCT "from_user_id", "to_user_id"
 				FROM "transactions"
 				WHERE "from_user_id" = :0
 					OR "to_user_id" = :1
-			SQL
-			,
+			SQL,
 			[Auth::id(), Auth::id()],
 		);
 		$users = collect($users)
-			->map(fn($a) => [$a->from_user_id, $a->to_user_id])
+			->map(fn ($a) => [$a->from_user_id, $a->to_user_id])
 			->flatten()
-			->filter(fn($a) => $a != Auth::id())
+			->filter(fn ($a) => $a != Auth::id())
 			->unique();
-		$users = User::whereIn("id", $users->toArray())->get();
+		$users = User::withTrashed()
+			->whereIn("id", $users->toArray())
+			->orderBy("name")
+			->get();
 
-		return view("pages.dashboard", compact("transactions", "users"));
+		return view("pages.dashboard", compact("users"));
 	}
 }

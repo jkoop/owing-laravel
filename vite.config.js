@@ -12,6 +12,7 @@ export default defineConfig({
 				"resources/css/successes.css",
 				"resources/js/app.js",
 				"resources/js/bootstrap.js",
+				"resources/js/dashboard.js",
 				"resources/js/datetime-absolute.js",
 				"resources/js/datetime-relative.js",
 				"resources/js/successes.js",
