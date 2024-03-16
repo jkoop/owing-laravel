@@ -16,8 +16,8 @@
 		<label>
 			@t('Sort by')
 			<select name="order_by" onchange="resetTable()">
-				<option value="updated_at" selected>@t('Updated at')</option>
-				<option value="occurred_at">@t('Occurred at')</option>
+				<option value="occurred_at" selected>@t('Occurred at')</option>
+				<option value="updated_at">@t('Updated at')</option>
 			</select>
 		</label>
 		<label>
