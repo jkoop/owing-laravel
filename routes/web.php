@@ -5,6 +5,7 @@ use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\PriceHistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,8 @@ Route::middleware("auth")->group(function () {
 	Route::post("t/{transaction}", [TransactionController::class, "update"])
 		->can("update", "transaction")
 		->withTrashed();
+
+    Route::get("price-history", [PriceHistoryController::class, "view"]);
 
 	Route::get("profile", [ProfileController::class, "view"]);
 	Route::post("profile", [ProfileController::class, "update"]);
