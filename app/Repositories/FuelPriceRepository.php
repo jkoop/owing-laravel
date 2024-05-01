@@ -75,7 +75,7 @@ class FuelPriceRepository {
 			$price,
 		);
 
-		$price = json_decode($price[0]);
+		$price = json_decode($price[0] ?? 'null');
 		$price = $price?->data->locationByArea->stations->results;
 		if ($price == null) {
 			return null;
