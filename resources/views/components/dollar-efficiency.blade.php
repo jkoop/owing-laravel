@@ -1,6 +1,6 @@
 @props(['car', 'withTime' => false])
 
-@if ($car->fuelType->fuel_type != null)
+@if ($car->fuelType?->fuel_type != null)
 	@php($fuelPrice = FuelPriceRepository::getFuelPrice($car->fuelType->fuel_type))
 
 	@if ($withTime)

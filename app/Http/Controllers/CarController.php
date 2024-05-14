@@ -55,7 +55,7 @@ final class CarController extends Controller {
 		$car->fill($data);
 		$car->save();
 
-		if (round($request->efficiency, 4) != $car->efficiency->efficiency) {
+		if (round($request->efficiency, 4) != $car->efficiency?->efficiency) {
 			CarEfficiency::create([
 				"car_id" => $car->id,
 				"efficiency" => round($request->efficiency, 4),
@@ -71,7 +71,7 @@ final class CarController extends Controller {
 			}
 		}
 
-		if ($request->fuel_type != $car->fuelType->fuel_type) {
+		if ($request->fuel_type != $car->fuelType?->fuel_type) {
 			CarFuelType::create([
 				"car_id" => $car->id,
 				"fuel_type" => $request->fuel_type,

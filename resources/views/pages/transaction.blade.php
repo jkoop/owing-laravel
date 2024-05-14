@@ -54,7 +54,7 @@
 				<legend>@t('Which car?')</legend>
 				<x-select name="car_id">
 					<option></option>
-					@foreach (App\Models\Car::all() as $car)
+					@foreach (App\Models\Car::all()->sortBy("name") as $car)
 						<x-select.option :value="$car->id">{{ $car->name }}</x-select.option>
 					@endforeach
 				</x-select>
