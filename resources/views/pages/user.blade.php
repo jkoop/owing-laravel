@@ -3,6 +3,10 @@
 	$user->name])))
 @section('content')
 
+    <form style="display:none" id="impersonate" action="/u/{{ $user->id }}/impersonate" method="post">
+        @csrf
+    </form>
+
 	<form method="post">
 		@csrf
 		<table>
@@ -53,6 +57,7 @@
 		@if ($user->id and Auth::user()->is_admin and $user->id != Auth::id())
 			@if ($user->deleted_at == null)
 				<button name="delete" value="on">@t('Delete')</button>
+                <button form="impersonate" type="submit">Impersonate</button>
 			@else
 				<button name="restore" value="on">@t('Restore')</button>
 				@t('Deleted') <x-datetime :datetime="$user->deleted_at" relative />

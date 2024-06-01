@@ -31,6 +31,8 @@ Route::middleware("auth")->group(function () {
 		Route::post("u/new", [UserController::class, "create"]);
 		Route::get("u/{user}", [UserController::class, "view"])->withTrashed();
 		Route::post("u/{user}", [UserController::class, "update"])->withTrashed();
+
+        Route::post("u/{user}/impersonate", [AuthenticationController::class, "impersonate"]);
 	});
 
 	Route::get("t", [TransactionController::class, "index"]);
