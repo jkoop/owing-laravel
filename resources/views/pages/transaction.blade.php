@@ -12,7 +12,7 @@
 	'amount' => old('amount', $transaction->amount),
 	'distance' => old('distance', $transaction->distance),
 	'ratio' => old('ratio', $transaction->ratio ?? '1'),
-	'occurred_at' => old('occurred_at', $transaction->occurred_at?->format('Y-m-d')),
+	'occurred_at' => old('occurred_at', $transaction->occurred_at?->format('Y-m-d') ?? now()->format('Y-m-d')),
 	'memo' => old('memo', $transaction->memo),
 	'my_cars' => Auth::user()->cars->pluck('id')->toArray(),
 	'disabled' => !Auth::user()->can('update', $transaction),
@@ -120,7 +120,7 @@
 				<legend x-show="kind == 'drivetrak' && car_id && !my_cars.includes(parseInt(car_id)) && distance">
 					@t('When did/will you drive it?')
 				</legend>
-				<x-input name="occurred_at" type="date" />
+				<x-input name="occurred_at" type="date" required />
 			</fieldset>
 
 			<fieldset x-cloak
