@@ -2,7 +2,7 @@
 	@foreach ($users as $user)
 		@php($owing = Auth::user()->getOwing($user))
 		@if ($owing > 0)
-			<li>
+			<li class="bg-red-200 w-fit">
 				@t('You owe :user :money', [
 				    'user' => c('user', ['user' => $user]),
 				    'money' => '$' . number_format($owing, 2),
