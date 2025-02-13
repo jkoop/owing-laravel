@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
 return [
+"extra-head-html" => env("EXTRA_HEAD_HTML", ""),
+
 	/*
     |--------------------------------------------------------------------------
     | Application Name
