@@ -32,6 +32,7 @@ async function getMoreRows() {
 	const offset = tbody.querySelectorAll("tr:not(.loading)").length
 	const orderBy = document.querySelector('select[name="order_by"]')?.value
 	const userId = document.querySelector('select[name="user_id"]')?.value
+	const memo = document.querySelector('input[name="memo"]')?.value
 	const deleted = document.querySelector('input[name="deleted"]').checked ? "&deleted=on" : ""
 	let response
 
@@ -43,7 +44,7 @@ async function getMoreRows() {
 	tbody.innerHTML += `<tr class="loading"><td colspan="5" class="p-2">${spinner.outerHTML}</td></tr>`
 
 	try {
-		response = await fetch(`/t?offset=${offset}&order_by=${orderBy}&user_id=${userId}${deleted}`, {
+		response = await fetch(`/t?offset=${offset}&order_by=${orderBy}&user_id=${userId}&memo=${memo}${deleted}`, {
 			redirect: "error",
 		})
 	} catch (err) {

@@ -92,11 +92,7 @@ final class ImportController extends Controller {
 					if ($row[4] == "") {
 						break; // not paid
 					}
-					$fromUserId = Str::of($row[3])
-						->explode(",")
-						->filter(fn($a) => $a != $row[2])
-						->reverse()
-						->first();
+					$fromUserId = Str::of($row[3])->explode(",")->filter(fn($a) => $a != $row[2])->reverse()->first();
 					if ($fromUserId == null) {
 						break;
 					}
@@ -188,15 +184,13 @@ final class ImportController extends Controller {
 			->map(fn($a) => $a->delete());
 
 		// fix transaction with negative amount
-		Transaction::where("amount", "<", 0)
-			->get()
-			->map(
-				fn($a) => $a->update([
-					"from_user_id" => $a->to_user_id,
-					"to_user_id" => $a->from_user_id,
-					"amount" => abs($a->amount),
-				]),
-			);
+		Transaction::where("amount", "<", 0)->get()->map(
+			fn($a) => $a->update([
+				"from_user_id" => $a->to_user_id,
+				"to_user_id" => $a->from_user_id,
+				"amount" => abs($a->amount),
+			]),
+		);
 
 		// try to guess the correct of multiple clients for invoices
 		foreach (

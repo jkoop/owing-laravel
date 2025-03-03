@@ -29,6 +29,10 @@
 				@endforeach
 			</select>
 		</label>
+		<label>
+			@t('Filter by memo')
+			<input name="memo" oninput="resetTable()" />
+		</label>
 		<a class="ml-auto" href="/t/new">@t('New')</a>
 	</nav>
 

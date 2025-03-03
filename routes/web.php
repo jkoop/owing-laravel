@@ -32,7 +32,7 @@ Route::middleware("auth")->group(function () {
 		Route::get("u/{user}", [UserController::class, "view"])->withTrashed();
 		Route::post("u/{user}", [UserController::class, "update"])->withTrashed();
 
-        Route::post("u/{user}/impersonate", [AuthenticationController::class, "impersonate"]);
+		Route::post("u/{user}/impersonate", [AuthenticationController::class, "impersonate"]);
 	});
 
 	Route::get("t", [TransactionController::class, "index"]);
@@ -45,7 +45,7 @@ Route::middleware("auth")->group(function () {
 		->can("update", "transaction")
 		->withTrashed();
 
-    Route::get("price-history", [PriceHistoryController::class, "view"]);
+	Route::get("price-history", [PriceHistoryController::class, "view"]);
 
 	Route::get("profile", [ProfileController::class, "view"]);
 	Route::post("profile", [ProfileController::class, "update"]);

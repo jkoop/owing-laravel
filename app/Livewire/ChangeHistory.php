@@ -19,26 +19,12 @@ final class ChangeHistory extends Component {
 	}
 
 	public function render() {
-		$changes = $this->model
-			->changes()
-			->with("author")
-			->get();
+		$changes = $this->model->changes()->with("author")->get();
 		if ($this->model instanceof Car) {
-			$changes = $changes->concat(
-				CarEfficiency::with("author")
-					->where("car_id", $this->model->id)
-					->get(),
-			);
-			$changes = $changes->concat(
-				CarFuelType::with("author")
-					->where("car_id", $this->model->id)
-					->get(),
-			);
+			$changes = $changes->concat(CarEfficiency::with("author")->where("car_id", $this->model->id)->get());
+			$changes = $changes->concat(CarFuelType::with("author")->where("car_id", $this->model->id)->get());
 		}
-		$changes = $changes
-			->sortByDesc("id")
-			->sortBy(fn($a) => $a instanceof Change)
-			->sortByDesc("created_at");
+		$changes = $changes->sortByDesc("id")->sortBy(fn($a) => $a instanceof Change)->sortByDesc("created_at");
 		return view("livewire.change-history.index", compact("changes"));
 	}
 

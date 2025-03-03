@@ -16,8 +16,7 @@ final class UniqueCi implements ValidationRule {
 		private string $table,
 		private ?string $column = null,
 		private int|array $ignoreRowId = [],
-	) {
-	}
+	) {}
 
 	/**
 	 * Run the validation rule.

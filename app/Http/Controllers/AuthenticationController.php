@@ -26,10 +26,10 @@ final class AuthenticationController extends Controller {
 		return Redirect::intended()->with("success", t("Welcome"));
 	}
 
-    public function impersonate(User $user) {
-        Auth::login($user, false);
-        return Redirect::to("/");
-    }
+	public function impersonate(User $user) {
+		Auth::login($user, false);
+		return Redirect::to("/");
+	}
 
 	public function logout() {
 		Auth::logout();

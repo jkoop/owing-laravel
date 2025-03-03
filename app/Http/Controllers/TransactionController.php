@@ -19,6 +19,7 @@ final class TransactionController extends Controller {
 			"offset" => "required|int|min:0",
 			"user_id" => "nullable|int|min:1",
 			"order_by" => "required|in:occurred_at,updated_at",
+			"memo" => "nullable|string",
 		]);
 
 		$transactions = Auth::user()
@@ -36,6 +37,10 @@ final class TransactionController extends Controller {
 			$transactions = $transactions->where(function ($query) use ($request) {
 				$query->where("from_user_id", $request->user_id)->orWhere("to_user_id", $request->user_id);
 			});
+		}
+		if (trim($request->memo) != "") {
+			$memo = trim($request->memo);
+			$transactions = $transactions->where("memo", "like", "%$memo%");
 		}
 		$transactions = $transactions->get();
 
@@ -170,7 +175,7 @@ final class TransactionController extends Controller {
 			"is_confirmed" => $fromUser->id == Auth::id(),
 			"car_id" => $car?->id,
 			"distance" => $distance,
-            "ratio" => $ratio,
+			"ratio" => $ratio,
 			"memo" => $memo,
 			"occurred_at" => $occurredAt,
 		]);

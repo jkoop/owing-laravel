@@ -17,10 +17,7 @@ return new class extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table
-				->foreign("owner_id")
-				->references("id")
-				->on("users");
+			$table->foreign("owner_id")->references("id")->on("users");
 		});
 
 		Schema::create("car_efficiencies", function (Blueprint $table) {
@@ -30,10 +27,7 @@ return new class extends Migration {
 			$table->foreignId("author_id")->nullable();
 			$table->timestamps();
 
-			$table
-				->foreign("author_id")
-				->references("id")
-				->on("users");
+			$table->foreign("author_id")->references("id")->on("users");
 		});
 
 		Schema::create("car_fuel_types", function (Blueprint $table) {
@@ -43,10 +37,7 @@ return new class extends Migration {
 			$table->foreignId("author_id")->nullable();
 			$table->timestamps();
 
-			$table
-				->foreign("author_id")
-				->references("id")
-				->on("users");
+			$table->foreign("author_id")->references("id")->on("users");
 		});
 
 		Schema::create("changes", function (Blueprint $table) {
@@ -59,22 +50,10 @@ return new class extends Migration {
 			$table->string("reason")->nullable();
 			$table->timestamps();
 
-			$table
-				->foreign("author_id")
-				->references("id")
-				->on("users");
-			$table
-				->foreign("car_id")
-				->references("id")
-				->on("cars");
-			$table
-				->foreign("transaction_id")
-				->references("id")
-				->on("transactions");
-			$table
-				->foreign("user_id")
-				->references("id")
-				->on("users");
+			$table->foreign("author_id")->references("id")->on("users");
+			$table->foreign("car_id")->references("id")->on("cars");
+			$table->foreign("transaction_id")->references("id")->on("transactions");
+			$table->foreign("user_id")->references("id")->on("users");
 		});
 
 		Schema::create("files", function (Blueprint $table) {
@@ -86,10 +65,7 @@ return new class extends Migration {
 			$table->bigInteger("size", unsigned: true)->comment("in bytes");
 			$table->timestamps();
 
-			$table
-				->foreign("change_id")
-				->references("id")
-				->on("changes");
+			$table->foreign("change_id")->references("id")->on("changes");
 		});
 
 		Schema::create("fuel_prices", function (Blueprint $table) {
@@ -109,28 +85,16 @@ return new class extends Migration {
 			$table->unsignedFloat("amount");
 			$table->boolean("is_confirmed");
 			$table->string("memo");
-			$table
-				->foreignId("car_id")
-				->nullable()
-				->comment("if this is a DriveTrak-style entry");
+			$table->foreignId("car_id")->nullable()->comment("if this is a DriveTrak-style entry");
 			$table->unsignedFloat("distance")->nullable();
 			$table->unsignedFloat("ratio")->nullable();
 			$table->dateTime("occurred_at")->index();
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table
-				->foreign("from_user_id")
-				->references("id")
-				->on("users");
-			$table
-				->foreign("to_user_id")
-				->references("id")
-				->on("users");
-			$table
-				->foreign("car_id")
-				->references("id")
-				->on("cars");
+			$table->foreign("from_user_id")->references("id")->on("users");
+			$table->foreign("to_user_id")->references("id")->on("users");
+			$table->foreign("car_id")->references("id")->on("cars");
 		});
 
 		Schema::create("users", function (Blueprint $table) {
@@ -139,10 +103,7 @@ return new class extends Migration {
 			$table->string("name")->unique();
 			$table->string("password")->nullable();
 			$table->string("locale")->default("en_CA");
-			$table
-				->string("remember_token")
-				->nullable()
-				->comment('for "remember me"');
+			$table->string("remember_token")->nullable()->comment('for "remember me"');
 			$table->boolean("is_admin")->default(false);
 			$table->boolean("must_change_password")->default(false);
 			$table->timestamps();

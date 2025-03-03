@@ -2,5 +2,4 @@
 
 namespace App\Models;
 
-class File extends Model {
-}
+class File extends Model {}

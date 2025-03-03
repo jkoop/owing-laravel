@@ -30,10 +30,7 @@
 					<td><x-user :user="$user" /></td>
 					<td>{{ $user->username }}</td>
 					<td>${{ number_format($user->balance, 2) }}</td>
-					<td><x-datetime :datetime="$user
-					    ->transactions()
-					    ->orderByDesc('occurred_at')
-					    ->first()?->occurred_at" relative /></td>
+					<td><x-datetime :datetime="$user->transactions()->orderByDesc('occurred_at')->first()?->occurred_at" relative /></td>
 					<td>@t($user->is_admin ? 'true' : 'false')</td>
 					@if (request()->has('deleted'))
 						<td><x-datetime :datetime="$user->deleted_at" relative /></td>

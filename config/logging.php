@@ -51,13 +51,13 @@ return [
     */
 
 	"channels" => [
-    'discord' => [
-        'driver' => 'custom',
-        'via'    => MarvinLabs\DiscordLogger\Logger::class,
+		"discord" => [
+			"driver" => "custom",
+			"via" => MarvinLabs\DiscordLogger\Logger::class,
 			"level" => env("LOG_LEVEL", "debug"),
-        'url'    => env('LOG_DISCORD_WEBHOOK_URL'),
-        'ignore_exceptions' => env('LOG_DISCORD_IGNORE_EXCEPTIONS', false),
-    ],
+			"url" => env("LOG_DISCORD_WEBHOOK_URL"),
+			"ignore_exceptions" => env("LOG_DISCORD_IGNORE_EXCEPTIONS", false),
+		],
 		"stack" => [
 			"driver" => "stack",
 			"channels" => ["single"],

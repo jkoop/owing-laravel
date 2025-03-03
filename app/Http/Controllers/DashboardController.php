@@ -28,10 +28,7 @@ final class DashboardController extends Controller {
 			->flatten()
 			->filter(fn($a) => $a != Auth::id())
 			->unique();
-		$users = User::withTrashed()
-			->whereIn("id", $users->toArray())
-			->orderBy("name")
-			->get();
+		$users = User::withTrashed()->whereIn("id", $users->toArray())->orderBy("name")->get();
 
 		return view("pages.dashboard", compact("users"));
 	}
