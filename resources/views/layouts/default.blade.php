@@ -14,6 +14,8 @@
 
 	@vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/datetime-absolute.js', 'resources/js/datetime-relative.js'])
 
+	{!! config('app.extra-head-html') !!}
+
 	<style>
 		@font-face {
 			font-display: swap;
