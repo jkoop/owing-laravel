@@ -19,3 +19,4 @@ npm-debug.log
 yarn-error.log
 docker-compose.prod.yml
 backup.sh
+docker-compose.override.yml

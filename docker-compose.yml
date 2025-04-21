@@ -22,6 +22,7 @@ services:
         networks:
             - sail
         depends_on: {}
+
 networks:
     sail:
         driver: bridge
